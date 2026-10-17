@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100b1c">
+  <title>Sally's Cosmic Code Quest</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f7f1ff;
+      --muted: #bcb1ce;
+      --quiet: #877d9b;
+      --night: #100b1c;
+      --panel: #1a1227;
+      --lilac: #d5b7ff;
+      --gold: #f5d37b;
+      --silver: #c7c7d4;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 50% 58%, rgba(97, 50, 137, .25), transparent 43%),
+        radial-gradient(ellipse at 13% 12%, rgba(69, 44, 102, .2), transparent 34%),
+        radial-gradient(ellipse at 89% 87%, rgba(107, 56, 102, .15), transparent 34%),
+        #100b1c;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    body::before, body::after {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      content: "";
+    }
+
+    body::before {
+      opacity: .58;
+      background-image:
+        radial-gradient(1px 1px at 7% 19%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 18% 76%, #d9caff 98%, transparent),
+        radial-gradient(1.5px 1.5px at 31% 11%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 47% 83%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 61% 28%, #d9caff 98%, transparent),
+        radial-gradient(1.5px 1.5px at 79% 67%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 92% 14%, #fff 98%, transparent);
+      background-size: 370px 310px;
+    }
+
+    body::after {
+      opacity: .22;
+      background-image: radial-gradient(1px 1px at 34% 38%, #dfc9ff 98%, transparent), radial-gradient(1px 1px at 88% 49%, #fff 98%, transparent);
+      background-size: 173px 197px;
+    }
+
+    button, textarea { font: inherit; }
+    button { color: inherit; }
+
+    .shell { width: min(1100px, calc(100% - 48px)); margin: 0 auto; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 0 20px;
+      border-bottom: 1px solid rgba(218, 198, 244, .13);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark { color: var(--gold); font-size: 26px; line-height: 1; }
+    .brand-name { font-size: 12px; font-weight: 700; letter-spacing: 2.2px; text-transform: uppercase; }
+    .brand-sub { display: block; margin-top: 4px; color: var(--quiet); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+    .progress { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; }
+    .progress-track { width: 92px; height: 4px; overflow: hidden; border-radius: 4px; background: #352a43; }
+    .progress-fill { width: 20%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #d9b9ff, #f4d783); transition: width .35s ease; }
+
+    main { padding: 44px 0 52px; }
+    .intro { text-align: center; }
+    .eyebrow { color: #d1b4f7; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin: 12px 0 9px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(30px, 5vw, 48px); font-weight: 400; }
+    .intro p { margin-bottom: 0; color: var(--muted); font-size: 14px; }
+
+    .map {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      align-items: start;
+      grid-auto-flow: row;
+      row-gap: 32px;
+      min-height: 500px;
+      margin-top: 58px;
+      isolation: isolate;
+    }
+
+    .trail {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 430px;
+      z-index: -1;
+      overflow: visible;
+    }
+
+    .trail-mobile { display: none; }
+
+    .trail path {
+      fill: none;
+      stroke: rgba(207, 180, 240, .64);
+      stroke-dasharray: 1 2;
+      stroke-linecap: round;
+      stroke-width: 1.5;
+      vector-effect: non-scaling-stroke;
+      filter: drop-shadow(0 0 2px rgba(207, 180, 240, .45));
+    }
+
+    .checkpoint {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .checkpoint:nth-of-type(even) { margin-top: 80px; }
+    .checkpoint:nth-of-type(n + 6) { grid-row: 2; }
+    .checkpoint:nth-of-type(6) { grid-column: 5; }
+    .checkpoint:nth-of-type(7) { grid-column: 4; }
+    .checkpoint:nth-of-type(8) { grid-column: 3; }
+    .checkpoint:nth-of-type(9) { grid-column: 2; }
+    .checkpoint:nth-of-type(10) { grid-column: 1; }
+
+    .diamond {
+      position: relative;
+      display: grid;
+      width: 68px;
+      height: 68px;
+      place-items: center;
+      border: 1px solid rgba(225, 203, 250, .5);
+      background: linear-gradient(145deg, rgba(79, 55, 104, .55), rgba(34, 23, 49, .91));
+      box-shadow: 0 0 24px rgba(176, 129, 224, .13), inset 0 0 16px rgba(226, 202, 255, .08);
+      cursor: pointer;
+      transform: rotate(45deg);
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+
+    .diamond::before { position: absolute; inset: 5px; border: 1px solid rgba(235, 219, 255, .18); content: ""; }
+    .diamond-inner { display: grid; place-items: center; transform: rotate(-45deg); }
+    .diamond-star { color: var(--silver); font-size: 25px; line-height: 1; filter: drop-shadow(0 0 6px currentColor); }
+    .checkpoint.gold .diamond { border-color: rgba(245, 211, 123, .85); box-shadow: 0 0 28px rgba(240, 196, 96, .22), inset 0 0 18px rgba(255, 223, 143, .17); }
+    .checkpoint.gold .diamond-star { color: var(--gold); }
+    .diamond:hover, .diamond:focus-visible, .checkpoint.is-open .diamond { z-index: 3; border-color: #f0d4ff; box-shadow: 0 0 34px rgba(198, 150, 255, .42), inset 0 0 22px rgba(245, 231, 255, .21); transform: rotate(45deg) scale(1.2); }
+    .diamond:focus-visible, .close:focus-visible, .action:focus-visible, .back:focus-visible { outline: 2px solid #f2d4ff; outline-offset: 5px; }
+
+    .checkpoint-label { margin-top: 21px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: 16px; }
+    .checkpoint-concept { margin-top: 5px; color: var(--quiet); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+    .rank { margin-top: 10px; color: var(--silver); font-size: 9px; letter-spacing: 1.3px; text-transform: uppercase; }
+    .checkpoint.gold .rank { color: var(--gold); }
+
+    .preview {
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      z-index: 5;
+      width: min(240px, 44vw);
+      min-height: 248px;
+      padding: 0 18px 17px;
+      overflow: hidden;
+      border: 1px solid rgba(226, 204, 248, .22);
+      border-radius: 5px;
+      background: rgba(24, 16, 36, .94);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, .5), 0 0 22px rgba(174, 124, 224, .1);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -7px) scale(.94);
+      transform-origin: top center;
+      transition: opacity .2s ease, transform .2s ease;
+      backdrop-filter: blur(12px);
+    }
+
+    .checkpoint:hover .preview, .checkpoint:focus-within .preview, .checkpoint.is-open .preview { opacity: 1; pointer-events: auto; transform: translate(-50%, 0) scale(1); }
+    .preview-art { position: relative; display: grid; height: 133px; margin: 0 -18px 12px; overflow: hidden; place-items: center; background: radial-gradient(ellipse at 50% 65%, rgba(190, 119, 209, .42), transparent 53%), radial-gradient(ellipse at 25% 34%, rgba(97, 70, 153, .72), transparent 40%), #20182e; }
+    .preview-art::before { position: absolute; inset: -12px; background: radial-gradient(ellipse at 50% 55%, rgba(244, 201, 255, .32), transparent 52%); content: ""; filter: blur(12px); }
+    .portrait { position: relative; width: 105px; height: 125px; margin-top: 10px; filter: drop-shadow(0 0 14px rgba(245, 220, 255, .22)); }
+    .preview h3 { margin: 0 0 5px; font-family: Georgia, "Times New Roman", serif; font-size: 15px; font-weight: 400; }
+    .preview p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .preview .task-line { margin-top: 7px; color: #e3d1f5; }
+    .preview-tag { position: absolute; top: 10px; left: 12px; z-index: 1; color: #e5d3f9; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .legend { display: flex; justify-content: center; gap: 22px; margin-top: 4px; color: var(--quiet); font-size: 10px; letter-spacing: .7px; text-transform: uppercase; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .legend i { width: 8px; height: 8px; display: inline-block; border: 1px solid currentColor; transform: rotate(45deg); }
+    .legend .gold-key { color: var(--gold); }
+
+    .game-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      overflow-y: auto;
+      padding: 28px 20px;
+      background: rgba(13, 9, 22, .97);
+      backdrop-filter: blur(14px);
+    }
+    .game-screen.active { display: block; animation: arrive .22s ease both; }
+    @keyframes arrive { from { opacity: 0; } to { opacity: 1; } }
+    .game-wrap { width: min(720px, 100%); margin: 0 auto; }
+    .game-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(218, 198, 244, .15); }
+    .back, .close { border: 0; background: transparent; cursor: pointer; }
+    .back { padding: 8px 0; color: var(--muted); font-size: 12px; }
+    .close { width: 38px; height: 38px; color: var(--muted); font-size: 24px; }
+    .game-content { padding: 52px 0 36px; }
+    .game-content h2 { margin: 12px 0 12px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(30px, 6vw, 48px); font-weight: 400; }
+    .lesson { max-width: 580px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .task-box { margin-top: 30px; padding: 22px; border: 1px solid rgba(218, 198, 244, .18); border-left: 2px solid #c7a4ed; background: rgba(34, 24, 48, .72); }
+    .task-box h3 { margin: 0 0 8px; color: #e9d7fa; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+    .task-box p { margin: 0; color: var(--ink); font-size: 14px; line-height: 1.6; }
+    .editor-label { display: block; margin: 25px 0 9px; color: var(--muted); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+    textarea { width: 100%; min-height: 175px; resize: vertical; padding: 16px; border: 1px solid rgba(218, 198, 244, .2); border-radius: 3px; color: #efe5fb; background: #110d19; font-family: "SFMono-Regular", Consolas, monospace; font-size: 13px; line-height: 1.6; }
+    textarea:focus { border-color: #cda9f5; outline: none; }
+    .game-actions { display: flex; align-items: center; gap: 16px; margin-top: 15px; }
+    .action { padding: 11px 17px; border: 1px solid #d1b1f1; border-radius: 2px; color: #180e22; background: #dfc1fb; cursor: pointer; font-size: 12px; font-weight: 700; }
+    .action:hover { background: #efddff; }
+    .feedback { min-height: 20px; color: var(--muted); font-size: 12px; }
+    .feedback.success { color: var(--gold); }
+
+    @media (max-width: 700px) {
+      .shell { width: min(100% - 32px, 520px); }
+      .topbar { padding-top: 20px; }
+      .progress-track { width: 54px; }
+      main { padding-top: 36px; }
+      .map { grid-template-columns: 1fr; row-gap: 18px; margin-top: 42px; }
+      .trail { height: 1640px; }
+      .trail-desktop { display: none; }
+      .trail-mobile { display: block; }
+      .checkpoint { width: 70%; margin-inline: auto; }
+      .checkpoint:nth-of-type(n + 6) { grid-column: auto; grid-row: auto; }
+      .checkpoint:nth-of-type(even) { margin-top: 0; transform: translateX(20%); }
+      .checkpoint:nth-of-type(odd) { transform: translateX(-20%); }
+      .checkpoint-label { font-size: 15px; }
+      .preview { top: 94px; width: min(240px, 78vw); }
+      .legend { margin-top: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <div><span class="brand-name">Code with Sally</span><span class="brand-sub">Cosmic code quest</span></div>
+      </div>
+      <div class="progress" aria-label="Checkpoint progress">      <span id="progress-count">3 / 10</span><span class="progress-track"><span class="progress-fill" id="progress-fill" style="width: 30%"></span></span></div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div class="eyebrow">Your learning constellation</div>
+        <h1 id="page-title">Choose your next star</h1>
+        <p>Every new skill brings your constellation to life.</p>
+      </section>
+
+      <section class="map" aria-label="Coding checkpoints">
+        <svg class="trail trail-desktop" viewBox="0 0 100 430" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M 15 54 L 25 94 M 35 94 L 45 54 M 55 54 L 65 94 M 75 94 L 85 54 M 90 84 L 90 333 M 85 361 L 75 321 M 65 321 L 55 361 M 45 361 L 35 321 M 25 321 L 15 361"></path>
+        </svg>
+        <svg class="trail trail-mobile" viewBox="0 0 100 1640" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M 42 69 L 58 163 M 58 233 L 42 327 M 42 397 L 58 490 M 58 560 L 42 654 M 42 724 L 58 815 M 58 885 L 42 977 M 42 1047 L 58 1138 M 58 1208 L 42 1300 M 42 1370 L 58 1461"></path>
+        </svg>
+        <article class="checkpoint gold" data-id="print">
+          <button class="diamond" type="button" aria-label="Open Print checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">Print</div><div class="checkpoint-concept">Show text</div><div class="rank">★ Gold star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint gold" data-id="variables">
+          <button class="diamond" type="button" aria-label="Open Variables checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">Variables</div><div class="checkpoint-concept">Save values</div><div class="rank">★ Gold star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint gold" data-id="strings">
+          <button class="diamond" type="button" aria-label="Open Text checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">Text</div><div class="checkpoint-concept">Strings</div><div class="rank">★ Gold star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint" data-id="for-loops">
+          <button class="diamond" type="button" aria-label="Open For Loops checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">For Loops</div><div class="checkpoint-concept">Repeat actions</div><div class="rank">Silver star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint" data-id="if-statements">
+          <button class="diamond" type="button" aria-label="Open If Statements checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">If Statements</div><div class="checkpoint-concept">Make choices</div><div class="rank">Silver star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint" data-id="lists">
+          <button class="diamond" type="button" aria-label="Open Lists checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">Lists</div><div class="checkpoint-concept">Store many values</div><div class="rank">Silver star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint" data-id="while-loops">
+          <button class="diamond" type="button" aria-label="Open While Loops checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">While Loops</div><div class="checkpoint-concept">Repeat with a test</div><div class="rank">Silver star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint" data-id="functions">
+          <button class="diamond" type="button" aria-label="Open Functions checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">Functions</div><div class="checkpoint-concept">Reusable code</div><div class="rank">Silver star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint" data-id="dictionaries">
+          <button class="diamond" type="button" aria-label="Open Dictionaries checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">Dictionaries</div><div class="checkpoint-concept">Key and value pairs</div><div class="rank">Silver star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint" data-id="classes">
+          <button class="diamond" type="button" aria-label="Open Classes checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">Classes</div><div class="checkpoint-concept">Build objects</div><div class="rank">Silver star</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+      </section>
+      <div class="legend" aria-label="Star status legend"><span class="gold-key"><i></i> Complete</span><span><i></i> Ready to explore</span></div>
+    </main>
+  </div>
+
+  <section class="game-screen" id="game-screen" aria-modal="true" role="dialog" aria-labelledby="game-title" aria-hidden="true">
+    <div class="game-wrap">
+      <div class="game-top">
+        <button class="back" id="back-button" type="button">← &nbsp; Star map</button>
+        <button class="close" id="close-button" type="button" aria-label="Close checkpoint">×</button>
+      </div>
+      <div class="game-content">
+        <div class="eyebrow" id="game-concept"></div>
+        <h2 id="game-title"></h2>
+        <p class="lesson" id="game-lesson"></p>
+        <div class="task-box"><h3>Your mission</h3><p id="game-task"></p></div>
+        <label class="editor-label" for="code-answer">Your code</label>
+        <textarea id="code-answer" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+        <div class="game-actions"><button class="action" id="check-button" type="button">Check code</button><div class="feedback" id="feedback" role="status" aria-live="polite"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const lessons = {
+      print: {
+        title: "Print", concept: "Checkpoint 01 · Print",
+        lesson: "Use print() to show words and numbers on the screen.",
+        task: "Use print() to show Hello, world!",
+        check: code => /\bprint\s*\(/.test(code) && /hello,\s*world!/i.test(code)
+      },
+      variables: {
+        title: "Variables", concept: "Checkpoint 02 · Variables",
+        lesson: "A variable gives a name to a value so you can use it later.",
+        task: "Save your name in a variable called name, then print it.",
+        check: code => /\bname\s*=\s*["'][^"']+["']/.test(code) && /\bprint\s*\(\s*name\s*\)/.test(code)
+      },
+      strings: {
+        title: "Text", concept: "Checkpoint 03 · Strings",
+        lesson: "Text in Python is called a string. Put it inside quotes.",
+        task: "Save the word Python in a variable called language, then print it.",
+        check: code => /\blanguage\s*=\s*["']Python["']/.test(code) && /\bprint\s*\(\s*language\s*\)/.test(code)
+      },
+      "for-loops": {
+        title: "For Loops", concept: "Checkpoint 04 · For Loops",
+        lesson: "A for loop repeats code for each item in a sequence.",
+        task: "Use a for loop and range() to print the numbers 1 through 5.",
+        check: code => /\bfor\s+\w+\s+in\s+range\s*\(/.test(code) && /\bprint\s*\(/.test(code)
+      },
+      "if-statements": {
+        title: "If Statements", concept: "Checkpoint 05 · If Statements",
+        lesson: "An if statement runs code only when a test is true.",
+        task: "If score is at least 10, print Level up!",
+        check: code => /\bif\s+score\s*>=\s*10\s*:/.test(code) && /\bprint\s*\(/.test(code)
+      },
+      lists: {
+        title: "Lists", concept: "Checkpoint 06 · Lists",
+        lesson: "A list keeps several values together. Use an index to get one item.",
+        task: "Make a list called colors with two colors, then print the first one.",
+        check: code => /\bcolors\s*=\s*\[[^\]]+,\s*[^\]]+\]/.test(code) && /\bprint\s*\(\s*colors\s*\[\s*0\s*\]\s*\)/.test(code)
+      },
+      "while-loops": {
+        title: "While Loops", concept: "Checkpoint 07 · While Loops",
+        lesson: "A while loop repeats code as long as its test is true.",
+        task: "Use a while loop to print count while it is less than 5. Increase count in the loop.",
+        check: code => /\bwhile\s+count\s*<\s*5\s*:/.test(code) && /\bprint\s*\(\s*count\s*\)/.test(code) && /\bcount\s*\+=\s*1\b/.test(code)
+      },
+      functions: {
+        title: "Functions", concept: "Checkpoint 08 · Functions",
+        lesson: "A function is a named set of steps you can use again.",
+        task: "Make a function called greet that prints Hello, then call it.",
+        check: code => /\bdef\s+greet\s*\(\s*\)\s*:/.test(code) && /\bprint\s*\(/.test(code) && /\bgreet\s*\(\s*\)/.test(code.replace(/\bdef\s+greet\s*\(\s*\)\s*:/, ""))
+      },
+      dictionaries: {
+        title: "Dictionaries", concept: "Checkpoint 09 · Dictionaries",
+        lesson: "A dictionary stores values using named keys.",
+        task: "Make a person dictionary with a name key, then print that value.",
+        check: code => /\bperson\s*=\s*\{[^}]*["']name["']\s*:/.test(code) && /\bprint\s*\(\s*person\s*\[\s*["']name["']\s*\]\s*\)/.test(code)
+      },
+      classes: {
+        title: "Classes", concept: "Checkpoint 10 · Classes",
+        lesson: "A class describes how to make objects with their own data and actions.",
+        task: "Make a class called Dog, then create a Dog object called pet.",
+        check: code => /\bclass\s+Dog\s*[:(]/.test(code) && /\bpet\s*=\s*Dog\s*\(/.test(code)
+      }
+    };
+
+    const portrait = `<div class="preview-art"><span class="preview-tag">Meet your guide</span><svg class="portrait" viewBox="0 0 120 145" role="img" aria-label="Silhouette of a woman">
+      <defs><linearGradient id="figure" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5dafa"/><stop offset="1" stop-color="#bd91df"/></linearGradient></defs>
+      <path fill="url(#figure)" d="M17 145c2-26 7-38 23-45l12-6 2-13c-11-8-16-20-16-34 0-21 11-34 26-34 16 0 27 13 27 34 0 15-5 27-16 35l2 12 13 6c15 7 21 19 23 45H17z"/>
+      <path fill="#392346" d="M37 50C32 22 47 7 65 7c19 0 31 16 27 39-2 12-7 22-13 27l-2-18-9-12c-8 8-18 12-29 12l-1 18c-6-5-10-13-11-23z"/>
+      <path fill="#d7b5eb" d="M54 96l6 8 7-8 6 5-13 20-13-20z" opacity=".72"/>
+    </svg></div>`;
+
+    const checkpoints = [...document.querySelectorAll(".checkpoint")];
+    const gameScreen = document.getElementById("game-screen");
+    const codeAnswer = document.getElementById("code-answer");
+    const feedback = document.getElementById("feedback");
+    let activeId = null;
+    let completed = new Set(["print", "variables", "strings"]);
+
+    for (const checkpoint of checkpoints) {
+      const lesson = lessons[checkpoint.dataset.id];
+      const preview = checkpoint.querySelector(".preview");
+      preview.innerHTML = `${portrait}<h3>${lesson.title}</h3><p>${lesson.lesson}</p><p class="task-line">Mission: ${lesson.task}</p>`;
+      checkpoint.querySelector(".diamond").addEventListener("click", () => openLesson(checkpoint.dataset.id));
+      checkpoint.addEventListener("keydown", event => {
+        if (event.key === "Escape") checkpoint.classList.remove("is-open");
+      });
+    }
+
+    function openLesson(id) {
+      activeId = id;
+      const lesson = lessons[id];
+      document.getElementById("game-title").textContent = lesson.title;
+      document.getElementById("game-concept").textContent = lesson.concept;
+      document.getElementById("game-lesson").textContent = lesson.lesson;
+      document.getElementById("game-task").textContent = lesson.task;
+      codeAnswer.value = "";
+      feedback.textContent = "";
+      feedback.classList.remove("success");
+      gameScreen.classList.add("active");
+      gameScreen.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      document.getElementById("back-button").focus();
+    }
+
+    function closeLesson() {
+      gameScreen.classList.remove("active");
+      gameScreen.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      if (activeId) document.querySelector(`[data-id="${activeId}"] .diamond`).focus();
+    }
+
+    document.getElementById("back-button").addEventListener("click", closeLesson);
+    document.getElementById("close-button").addEventListener("click", closeLesson);
+    document.addEventListener("keydown", event => { if (event.key === "Escape" && gameScreen.classList.contains("active")) closeLesson(); });
+
+    document.getElementById("check-button").addEventListener("click", () => {
+      const lesson = lessons[activeId];
+      if (lesson.check(codeAnswer.value)) {
+        completed.add(activeId);
+        const checkpoint = document.querySelector(`[data-id="${activeId}"]`);
+        checkpoint.classList.add("gold");
+        checkpoint.querySelector(".rank").textContent = "★ Gold star";
+        document.getElementById("progress-count").textContent = `${completed.size} / ${checkpoints.length}`;
+        document.getElementById("progress-fill").style.width = `${completed.size / checkpoints.length * 100}%`;
+        feedback.textContent = "That's it! Checkpoint complete, star earned.";
+        feedback.classList.add("success");
+      } else {
+        feedback.textContent = "Not quite yet. Check the mission and give it another try.";
+        feedback.classList.remove("success");
+      }
+    });
+  </script>
+</body>
+</html>
