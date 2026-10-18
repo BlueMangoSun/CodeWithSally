@@ -21,6 +21,8 @@
     * { box-sizing: border-box; }
 
     body {
+      display: flex;
+      flex-direction: column;
       min-width: 320px;
       min-height: 100vh;
       margin: 0;
@@ -88,7 +90,7 @@
     .astronaut-cursor.is-hidden { opacity: 0; }
     .astronaut-cursor.is-moving { transform: translate3d(var(--cursor-x), var(--cursor-y), 0) translate(-50%, -50%) rotate(var(--flight-angle, 0rad)); }
 
-    .shell { width: min(1100px, calc(100% - 48px)); margin: 0 auto; }
+    .shell { display: flex; flex: 1; flex-direction: column; width: min(1100px, calc(100% - 48px)); margin: 0 auto; }
 
     .topbar {
       display: flex;
@@ -106,35 +108,51 @@
     .progress-track { width: 92px; height: 4px; overflow: hidden; border-radius: 4px; background: #352a43; }
     .progress-fill { width: 20%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #d9b9ff, #f4d783); transition: width .35s ease; }
 
-    main { padding: 44px 0 52px; }
+    main { display: flex; flex: 1; flex-direction: column; padding: 44px 0 8px; }
     .intro { text-align: center; }
     .eyebrow { color: #d1b4f7; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
     h1, h2, h3, p { margin-top: 0; }
     h1 { margin: 12px 0 9px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(30px, 5vw, 48px); font-weight: 400; }
     .intro p { margin-bottom: 0; color: var(--muted); font-size: 14px; }
 
+    .map-scroll {
+      position: relative;
+      flex: 0 0 550px;
+      height: 550px;
+      margin-top: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-color: rgba(207, 180, 240, .72) rgba(53, 42, 67, .8);
+      scrollbar-width: auto;
+      isolation: isolate;
+    }
+
     .map {
       position: relative;
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(10, 180px);
       align-items: start;
-      grid-auto-flow: row;
-      row-gap: 32px;
-      min-height: 500px;
-      margin-top: 58px;
+      grid-auto-flow: column;
+      width: max-content;
+      height: 500px;
+      padding: 28px 30px 16px;
       isolation: isolate;
     }
 
     .trail {
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 430px;
+      top: 0;
+      left: 0;
+      width: 1860px;
+      height: 160px;
       z-index: -1;
       overflow: visible;
+      pointer-events: none;
     }
 
-    .trail-mobile { display: none; }
+    .map-scroll::-webkit-scrollbar { height: 12px; }
+    .map-scroll::-webkit-scrollbar-track { border-radius: 8px; background: rgba(53, 42, 67, .8); }
+    .map-scroll::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 8px; background: rgba(207, 180, 240, .72); background-clip: padding-box; }
 
     .trail path {
       fill: none;
@@ -146,22 +164,19 @@
       filter: drop-shadow(0 0 2px rgba(207, 180, 240, .45));
     }
 
+    .trail path { stroke-dasharray: 4 5; }
+
     .checkpoint {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 0;
+      width: 180px;
+      min-width: 180px;
       text-align: center;
     }
 
-    .checkpoint:nth-of-type(even) { margin-top: 80px; }
-    .checkpoint:nth-of-type(n + 6) { grid-row: 2; }
-    .checkpoint:nth-of-type(6) { grid-column: 5; }
-    .checkpoint:nth-of-type(7) { grid-column: 4; }
-    .checkpoint:nth-of-type(8) { grid-column: 3; }
-    .checkpoint:nth-of-type(9) { grid-column: 2; }
-    .checkpoint:nth-of-type(10) { grid-column: 1; }
+    .checkpoint:nth-of-type(even) { transform: translateY(52px); }
 
     .diamond {
       position: relative;
@@ -199,6 +214,16 @@
 
     .checkpoint-label { margin-top: 21px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: 16px; }
     .checkpoint-concept { margin-top: 5px; color: var(--quiet); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+    .work-constellation { display: none; width: 100px; height: 78px; margin-top: 9px; overflow: visible; color: var(--gold); filter: drop-shadow(0 0 4px rgba(245, 211, 123, .4)); }
+    .checkpoint.gold .work-constellation { display: block; }
+    .work-constellation path, .work-constellation circle, .work-constellation rect, .work-constellation line, .work-constellation polyline, .work-constellation ellipse {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.5;
+    }
+    .work-constellation .star { fill: currentColor; stroke: none; }
     .preview {
       position: absolute;
       top: 100px;
@@ -221,16 +246,16 @@
     }
 
     .checkpoint:hover .preview, .checkpoint:focus-within .preview, .checkpoint.is-open .preview { opacity: 1; pointer-events: auto; transform: translate(-50%, 0) scale(1); }
-    .preview-art { position: relative; display: grid; height: 133px; margin: 0 -18px 12px; overflow: hidden; place-items: center; background: radial-gradient(ellipse at 50% 65%, rgba(190, 119, 209, .42), transparent 53%), radial-gradient(ellipse at 25% 34%, rgba(97, 70, 153, .72), transparent 40%), #20182e; }
+    .preview-art { position: relative; display: grid; height: 160px; margin: 0 -18px 12px; overflow: hidden; place-items: center; background: radial-gradient(ellipse at 50% 65%, rgba(190, 119, 209, .42), transparent 53%), radial-gradient(ellipse at 25% 34%, rgba(97, 70, 153, .72), transparent 40%), #20182e; }
     .preview-art::before { position: absolute; inset: -12px; background: radial-gradient(ellipse at 50% 55%, rgba(244, 201, 255, .32), transparent 52%); content: ""; filter: blur(12px); }
-    .portrait { position: relative; width: 105px; height: 125px; margin-top: 10px; filter: drop-shadow(0 0 14px rgba(245, 220, 255, .22)); }
-    .portrait-photo { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; object-fit: cover; object-position: center 20%; filter: none; }
+    .portrait { position: relative; width: 128px; height: 150px; margin-top: 10px; filter: drop-shadow(0 0 14px rgba(245, 220, 255, .22)); }
+    .portrait-photo { position: relative; width: auto; max-width: 100%; height: 150px; margin: 0; object-fit: contain; object-position: center; filter: none; }
     .preview h3 { margin: 0 0 5px; font-family: Georgia, "Times New Roman", serif; font-size: 15px; font-weight: 400; }
     .preview p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
     .preview .task-line { margin-top: 7px; color: #e3d1f5; }
     .preview-tag { position: absolute; top: 10px; left: 12px; z-index: 1; color: #e5d3f9; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; }
 
-    .legend { display: flex; justify-content: center; gap: 22px; margin-top: 4px; color: var(--quiet); font-size: 10px; letter-spacing: .7px; text-transform: uppercase; }
+    .legend { position: absolute; right: 0; bottom: 5px; left: 0; z-index: 2; display: flex; justify-content: center; gap: 22px; color: var(--quiet); font-size: 10px; letter-spacing: .7px; text-transform: uppercase; }
     .legend span { display: inline-flex; align-items: center; gap: 7px; }
     .legend i { width: 8px; height: 8px; display: inline-block; border: 1px solid currentColor; transform: rotate(45deg); }
     .legend .gold-key { color: var(--gold); }
@@ -272,17 +297,9 @@
       .topbar { padding-top: 20px; }
       .progress-track { width: 54px; }
       main { padding-top: 36px; }
-      .map { grid-template-columns: 1fr; row-gap: 18px; margin-top: 42px; }
-      .trail { height: 1640px; }
-      .trail-desktop { display: none; }
-      .trail-mobile { display: block; }
-      .checkpoint { width: 70%; margin-inline: auto; }
-      .checkpoint:nth-of-type(n + 6) { grid-column: auto; grid-row: auto; }
-      .checkpoint:nth-of-type(even) { margin-top: 0; transform: translateX(20%); }
-      .checkpoint:nth-of-type(odd) { transform: translateX(-20%); }
+      .map-scroll { flex-basis: 550px; margin-top: auto; }
       .checkpoint-label { font-size: 15px; }
       .preview { top: 94px; width: min(240px, 78vw); }
-      .legend { margin-top: 20px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -307,12 +324,10 @@
         <p>Every new skill brings your constellation to life.</p>
       </section>
 
+      <div class="map-scroll" role="region" aria-label="Scrollable coding checkpoints" tabindex="0">
       <section class="map" aria-label="Coding checkpoints">
-        <svg class="trail trail-desktop" viewBox="0 0 100 430" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M 15 54 L 25 94 M 35 94 L 45 54 M 55 54 L 65 94 M 75 94 L 85 54 M 90 84 L 90 333 M 85 361 L 75 321 M 65 321 L 55 361 M 45 361 L 35 321 M 25 321 L 15 361"></path>
-        </svg>
-        <svg class="trail trail-mobile" viewBox="0 0 100 1640" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M 42 69 L 58 163 M 58 233 L 42 327 M 42 397 L 58 490 M 58 560 L 42 654 M 42 724 L 58 815 M 58 885 L 42 977 M 42 1047 L 58 1138 M 58 1208 L 42 1300 M 42 1370 L 58 1461"></path>
+        <svg class="trail" viewBox="0 0 1860 160" aria-hidden="true">
+          <path d="M 120 62 L 300 114 L 480 62 L 660 114 L 840 62 L 1020 114 L 1200 62 L 1380 114 L 1560 62 L 1740 114"></path>
         </svg>
         <article class="checkpoint gold" data-id="print">
           <button class="diamond" type="button" aria-label="Open Print checkpoint">
@@ -329,10 +344,10 @@
           <div class="preview" aria-hidden="true"></div>
         </article>
         <article class="checkpoint gold" data-id="strings">
-          <button class="diamond" type="button" aria-label="Open Text checkpoint">
+          <button class="diamond" type="button" aria-label="Open Collections checkpoint">
             <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
           </button>
-          <div class="checkpoint-label">Text</div><div class="checkpoint-concept">Strings</div>
+          <div class="checkpoint-label">Collections</div><div class="checkpoint-concept">strings, lists, and tuples</div>
           <div class="preview" aria-hidden="true"></div>
         </article>
         <article class="checkpoint" data-id="for-loops">
@@ -386,6 +401,7 @@
         </article>
       </section>
       <div class="legend" aria-label="Star status legend"><span class="gold-key"><i></i> Complete</span><span><i></i> Ready to explore</span></div>
+      </div>
     </main>
   </div>
 
@@ -462,8 +478,8 @@
         check: code => /\bname\s*=\s*["'][^"']+["']/.test(code) && /\bprint\s*\(\s*name\s*\)/.test(code)
       },
       strings: {
-        title: "Text", concept: "Checkpoint 03 · Strings",
-        lesson: "Text in Python is called a string. Put it inside quotes.",
+        title: "Collections", concept: "Checkpoint 03 · Collections",
+        lesson: "Strings, lists, and tuples are Python collections used to group values.",
         task: "Save the word Python in a variable called language, then print it.",
         check: code => /\blanguage\s*=\s*["']Python["']/.test(code) && /\bprint\s*\(\s*language\s*\)/.test(code)
       },
@@ -511,12 +527,29 @@
       }
     };
 
-    const portrait = `<div class="preview-art"><span class="preview-tag">Meet your guide</span><svg class="portrait" viewBox="0 0 120 145" role="img" aria-label="Silhouette of a woman">
-      <defs><linearGradient id="figure" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5dafa"/><stop offset="1" stop-color="#bd91df"/></linearGradient></defs>
-      <path fill="url(#figure)" d="M17 145c2-26 7-38 23-45l12-6 2-13c-11-8-16-20-16-34 0-21 11-34 26-34 16 0 27 13 27 34 0 15-5 27-16 35l2 12 13 6c15 7 21 19 23 45H17z"/>
-      <path fill="#392346" d="M37 50C32 22 47 7 65 7c19 0 31 16 27 39-2 12-7 22-13 27l-2-18-9-12c-8 8-18 12-29 12l-1 18c-6-5-10-13-11-23z"/>
-      <path fill="#d7b5eb" d="M54 96l6 8 7-8 6 5-13 20-13-20z" opacity=".72"/>
-    </svg></div>`;
+    const portraits = {
+      variables: { name: "Katherine Johnson", field: "NASA mathematician", image: "katherine-johnson.jpg" },
+      strings: { name: "Lise Meitner", field: "Physicist", image: "lise-meitner.jpg" },
+      "for-loops": { name: "Margaret Hamilton", field: "Apollo software engineer", image: "margaret-hamilton.jpg" },
+      "if-statements": { name: "Grace Hopper", field: "Computer scientist", image: "grace-hopper.jpg" },
+      lists: { name: "Mae Jemison", field: "Astronaut and physician", image: "mae-jemison.jpg" },
+      "while-loops": { name: "Annie Easley", field: "NASA mathematician", image: "annie-easley.jpg" },
+      functions: { name: "Dorothy Vaughan", field: "NASA mathematician", image: "dorothy-vaughan.jpg" },
+      dictionaries: { name: "Mary Jackson", field: "NASA engineer", image: "mary-jackson.jpg" },
+      classes: { name: "Marie Curie", field: "Physicist and chemist", image: "marie-curie.jpg" }
+    };
+    const constellationIllustrations = {
+      print: `<circle cx="35" cy="22" r="13"/><path d="M25 18q10-13 20 0M28 33v7l7 5 7-5v-7M24 44l-12 8v13h46V52L46 44M32 45l3 8 4-8M39 54l10 9M31 54l-8 9"/><rect x="58" y="48" width="30" height="19" rx="2"/><path d="M64 54h12m-12 5h7M73 67v4m-8 0h18M11 18l2 4 4 1-4 2-2 4-1-4-4-2 4-1Z"/><circle class="star" cx="79" cy="19" r="1.7"/><circle class="star" cx="91" cy="31" r="1.5"/>`,
+      variables: `<circle cx="28" cy="18" r="8"/><path d="M21 28q7-5 14 0l4 16-10 5-10-5ZM21 32 12 44l5 3 10-9m12-6 9 11-5 3-10-8M28 49v15m8-15v15m-13 0h19"/><path d="M54 40h32v25H54zM59 46h22M59 51h18M59 56h20M59 61h11M48 34l6-5 6 5"/><circle class="star" cx="16" cy="13" r="1.7"/><circle class="star" cx="76" cy="20" r="1.6"/>`,
+      strings: `<circle cx="30" cy="19" r="8"/><path d="M23 29q7-5 14 0l5 15-11 5-11-5ZM24 33 13 43l4 4 11-7m13-7 10 8-4 4-11-7M31 49v14m8-14v14m-14 0h21"/><path d="M59 60h31M64 59V45l10-12 10 12v14M70 45h9m-11 5h13"/><circle cx="75" cy="36" r="3"/><path d="M76 33l5-7m-8 7-4-7M21 14l-4-4m35 16 5-4"/><circle class="star" cx="57" cy="13" r="1.7"/>`,
+      "for-loops": `<circle cx="29" cy="18" r="8"/><path d="M22 28q7-5 14 0l4 16-11 5-10-5ZM23 32 12 43l4 4 12-8m12-7 10 9-4 4-11-8M29 49v15m8-15v15m-13 0h20"/><rect x="56" y="35" width="31" height="28" rx="2"/><path d="M61 42h18m-18 6h22m-22 6h13m-13 5h19M49 29l7 6m-2-12 5 12"/><circle class="star" cx="76" cy="22" r="1.7"/>`,
+      "if-statements": `<circle cx="30" cy="18" r="8"/><path d="M23 28q7-5 14 0l4 16-11 5-10-5ZM24 32 14 43l4 4 11-8m12-7 9 8-4 4-11-7M30 49v14m8-14v14m-14 0h20"/><rect x="58" y="37" width="29" height="25" rx="2"/><path d="M63 44h7m-7 8h17m-17 5h12M74 43l4 4-4 4M19 17l3-3 3 3-3 3Z"/><circle class="star" cx="80" cy="24" r="1.7"/>`,
+      lists: `<circle cx="31" cy="18" r="8"/><path d="M24 28q7-5 14 0l4 16-11 5-11-5ZM25 32 14 43l4 4 11-8m13-7 9 8-4 4-10-7M31 49v14m8-14v14m-14 0h21"/><path d="M58 63V44q0-5 5-5h24q5 0 5 5v19ZM62 49h8m-8 6h8m-8 6h8m4-12h12m-12 6h12m-12 6h12M28 10l3-5 3 5"/><circle class="star" cx="78" cy="27" r="1.7"/>`,
+      "while-loops": `<circle cx="30" cy="18" r="8"/><path d="M23 28q7-5 14 0l4 16-11 5-10-5ZM24 32 14 43l4 4 11-8m12-7 10 8-4 4-11-7M30 49v14m8-14v14m-14 0h20"/><rect x="59" y="39" width="28" height="23" rx="2"/><path d="M64 45h18m-18 6h12m-12 6h17M18 16l4-4 4 4-4 4ZM73 29a9 9 0 1 1-8 5m0-6v6h6"/><circle class="star" cx="49" cy="19" r="1.7"/>`,
+      functions: `<circle cx="30" cy="18" r="8"/><path d="M23 28q7-5 14 0l4 16-11 5-10-5ZM24 32 14 43l4 4 11-8m12-7 10 8-4 4-11-7M30 49v14m8-14v14m-14 0h20"/><path d="M57 62V43l15-9 15 9v19ZM63 47h18m-18 5h18m-18 5h12M19 16l4-4 4 4-4 4ZM72 26v7m-4-4 4-4 4 4"/><circle class="star" cx="88" cy="26" r="1.6"/>`,
+      dictionaries: `<circle cx="29" cy="18" r="8"/><path d="M22 28q7-5 14 0l4 16-11 5-10-5ZM23 32 13 43l4 4 11-8m12-7 10 8-4 4-11-7M29 49v14m8-14v14m-14 0h20"/><path d="M57 38h31v25H57zM62 44h8v6h-8zm14 0h9m-9 4h9M62 55h8v6h-8zm14 1h9M72 47h3m-3 11h3M17 16l4-4 4 4-4 4Z"/><circle class="star" cx="78" cy="28" r="1.6"/>`,
+      classes: `<circle cx="29" cy="18" r="8"/><path d="M22 28q7-5 14 0l4 16-11 5-10-5ZM23 32 13 43l4 4 11-8m12-7 10 8-4 4-11-7M29 49v14m8-14v14m-14 0h20"/><path d="M58 63V43l14-8 14 8v20ZM63 46h18m-18 6h18m-18 6h12M70 35v-6m-4 3 4-4 4 4M17 16l4-4 4 4-4 4Z"/><circle class="star" cx="87" cy="25" r="1.6"/>`
+    };
     const sallyPortrait = `<div class="preview-art"><span class="preview-tag">NASA photo · Sally Ride</span><img class="portrait portrait-photo" src="assets/sally-ride-portrait.jpg" alt="Sally Ride smiling in her NASA flight suit"></div>`;
 
     const astronautCursor = document.getElementById("astronaut-cursor");
@@ -569,8 +602,16 @@
     for (const checkpoint of checkpoints) {
       const lesson = lessons[checkpoint.dataset.id];
       const preview = checkpoint.querySelector(".preview");
-      const guidePortrait = checkpoint.dataset.id === "print" ? sallyPortrait : portrait;
+      const guide = portraits[checkpoint.dataset.id];
+      const guidePortrait = guide
+        ? `<div class="preview-art"><span class="preview-tag">${guide.name} · ${guide.field}</span><img class="portrait portrait-photo" src="assets/${guide.image}" alt="${guide.name}, ${guide.field}"></div>`
+        : sallyPortrait;
       preview.innerHTML = `${guidePortrait}<h3>${lesson.title}</h3><p>${lesson.lesson}</p><p class="task-line">Mission: ${lesson.task}</p>`;
+      const guideName = guide?.name || "Sally Ride";
+      checkpoint.querySelector(".checkpoint-concept").insertAdjacentHTML(
+        "afterend",
+        `<svg class="work-constellation" viewBox="0 0 100 78" role="img" aria-label="${guideName} at work">${constellationIllustrations[checkpoint.dataset.id]}</svg>`
+      );
       checkpoint.querySelector(".diamond").addEventListener("click", () => openLesson(checkpoint.dataset.id));
       checkpoint.addEventListener("keydown", event => {
         if (event.key === "Escape") checkpoint.classList.remove("is-open");
