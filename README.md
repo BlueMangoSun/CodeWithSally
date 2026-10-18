@@ -13,12 +13,6 @@ Girl Hoo Hacks Hackathon
 
 In our featured **For Loops** module, players join **Dr. Wangari Maathai** (founder of the Green Belt Movement) to write Python loops that plant trees and restore digital ecosystems in real-time.
 
-### 🎯 Key Target Tracks
-* **Best Overall:** Zero-dependency, lightweight, responsive browser application featuring custom SVG art and interactive state management.
-* **Best Female Empowerment:** Highlights female role models in STEM—such as Katherine Johnson, Grace Hopper, Marie Curie, and Wangari Maathai—with interactive narrative cards.
-* **Most Sustainable:** Connects core code structures directly to environmental stewardship and tree restoration metrics.
-* **Best Beginner:** Scaffolded learning progression with real-time syntax checking, helpful diagnostic error hints, and visual code prompts.
-
 ---
 
 ## ✨ Features
