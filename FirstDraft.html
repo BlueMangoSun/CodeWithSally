@@ -178,8 +178,20 @@
     }
 
     .diamond::before { position: absolute; inset: 5px; border: 1px solid rgba(235, 219, 255, .18); content: ""; }
-    .diamond-inner { display: grid; place-items: center; transform: rotate(-45deg); }
-    .diamond-star { color: var(--silver); font-size: 25px; line-height: 1; filter: drop-shadow(0 0 6px currentColor); }
+    .diamond-inner { display: grid; place-items: center; transform: rotate(-45deg); perspective: 180px; }
+    .diamond-star { position: relative; display: inline-block; color: var(--silver); font-size: 25px; line-height: 1; filter: drop-shadow(0 0 6px currentColor); transform-origin: center; transform-style: preserve-3d; }
+    .diamond:hover .diamond-star, .diamond:focus-visible .diamond-star { animation: star-spin 1s ease-in-out; }
+    .diamond:hover .diamond-star::after {
+      position: absolute;
+      display: inline-block;
+      top: 0;
+      left: 4px;
+      color: inherit;
+      content: "✦";
+      opacity: .42;
+      animation: star-spin 1s ease-in-out;
+    }
+    @keyframes star-spin { to { transform: rotateY(-360deg); } }
     .checkpoint.gold .diamond { border-color: rgba(245, 211, 123, .85); box-shadow: 0 0 28px rgba(240, 196, 96, .22), inset 0 0 18px rgba(255, 223, 143, .17); }
     .checkpoint.gold .diamond-star { color: var(--gold); }
     .diamond:hover, .diamond:focus-visible, .checkpoint.is-open .diamond { z-index: 3; border-color: #f0d4ff; box-shadow: 0 0 34px rgba(198, 150, 255, .42), inset 0 0 22px rgba(245, 231, 255, .21); transform: rotate(45deg) scale(1.2); }
@@ -212,6 +224,7 @@
     .preview-art { position: relative; display: grid; height: 133px; margin: 0 -18px 12px; overflow: hidden; place-items: center; background: radial-gradient(ellipse at 50% 65%, rgba(190, 119, 209, .42), transparent 53%), radial-gradient(ellipse at 25% 34%, rgba(97, 70, 153, .72), transparent 40%), #20182e; }
     .preview-art::before { position: absolute; inset: -12px; background: radial-gradient(ellipse at 50% 55%, rgba(244, 201, 255, .32), transparent 52%); content: ""; filter: blur(12px); }
     .portrait { position: relative; width: 105px; height: 125px; margin-top: 10px; filter: drop-shadow(0 0 14px rgba(245, 220, 255, .22)); }
+    .portrait-photo { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; object-fit: cover; object-position: center 20%; filter: none; }
     .preview h3 { margin: 0 0 5px; font-family: Georgia, "Times New Roman", serif; font-size: 15px; font-weight: 400; }
     .preview p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
     .preview .task-line { margin-top: 7px; color: #e3d1f5; }
@@ -439,8 +452,8 @@
       print: {
         title: "Print", concept: "Checkpoint 01 · Print",
         lesson: "Use print() to show words and numbers on the screen.",
-        task: "Use print() to show Hello, world!",
-        check: code => /\bprint\s*\(/.test(code) && /hello,\s*world!/i.test(code)
+        task: "Use print() to meet Sally!",
+        check: code => /\bprint\s*\(/.test(code)
       },
       variables: {
         title: "Variables", concept: "Checkpoint 02 · Variables",
@@ -504,6 +517,7 @@
       <path fill="#392346" d="M37 50C32 22 47 7 65 7c19 0 31 16 27 39-2 12-7 22-13 27l-2-18-9-12c-8 8-18 12-29 12l-1 18c-6-5-10-13-11-23z"/>
       <path fill="#d7b5eb" d="M54 96l6 8 7-8 6 5-13 20-13-20z" opacity=".72"/>
     </svg></div>`;
+    const sallyPortrait = `<div class="preview-art"><span class="preview-tag">NASA photo · Sally Ride</span><img class="portrait portrait-photo" src="assets/sally-ride-portrait.jpg" alt="Sally Ride smiling in her NASA flight suit"></div>`;
 
     const astronautCursor = document.getElementById("astronaut-cursor");
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
@@ -555,7 +569,8 @@
     for (const checkpoint of checkpoints) {
       const lesson = lessons[checkpoint.dataset.id];
       const preview = checkpoint.querySelector(".preview");
-      preview.innerHTML = `${portrait}<h3>${lesson.title}</h3><p>${lesson.lesson}</p><p class="task-line">Mission: ${lesson.task}</p>`;
+      const guidePortrait = checkpoint.dataset.id === "print" ? sallyPortrait : portrait;
+      preview.innerHTML = `${guidePortrait}<h3>${lesson.title}</h3><p>${lesson.lesson}</p><p class="task-line">Mission: ${lesson.task}</p>`;
       checkpoint.querySelector(".diamond").addEventListener("click", () => openLesson(checkpoint.dataset.id));
       checkpoint.addEventListener("keydown", event => {
         if (event.key === "Escape") checkpoint.classList.remove("is-open");
