@@ -29,17 +29,18 @@
       overflow-x: hidden;
       color: var(--ink);
       background:
-        radial-gradient(ellipse at 50% 58%, rgba(97, 50, 137, .25), transparent 43%),
-        radial-gradient(ellipse at 13% 12%, rgba(69, 44, 102, .2), transparent 34%),
-        radial-gradient(ellipse at 89% 87%, rgba(107, 56, 102, .15), transparent 34%),
-        #100b1c;
+        radial-gradient(ellipse at 50% 112%, rgba(255, 149, 108, .6), transparent 38%),
+        radial-gradient(ellipse at 50% 91%, rgba(238, 139, 106, .28), transparent 51%),
+        radial-gradient(ellipse at 50% 64%, rgba(92, 57, 154, .42), transparent 48%),
+        radial-gradient(ellipse at 14% 18%, rgba(49, 52, 114, .48), transparent 35%),
+        #090b1b;
       font-family: "Trebuchet MS", "Segoe UI", sans-serif;
     }
 
     body::before, body::after {
       position: fixed;
       inset: 0;
-      z-index: -1;
+      z-index: 0;
       pointer-events: none;
       content: "";
     }
@@ -47,6 +48,11 @@
     body::before {
       opacity: .58;
       background-image:
+        radial-gradient(circle at 14% 35%, #ffd08a 0 13px, #f3987e 14px 16px, rgba(239, 142, 126, .45) 17px, transparent 22px),
+        radial-gradient(circle at 79% 24%, #d8c6ff 0 8px, #9c82d8 9px 10px, rgba(153, 126, 212, .4) 11px, transparent 15px),
+        radial-gradient(circle at 87% 71%, #f7c58a 0 18px, #d98385 19px 21px, rgba(199, 119, 140, .4) 22px, transparent 28px),
+        radial-gradient(circle at 35% 78%, #a5dded 0 5px, #6d9bbd 6px 7px, transparent 11px),
+        radial-gradient(circle at 57% 15%, #e9a4cc 0 10px, #b77bb9 11px 12px, transparent 16px),
         radial-gradient(1px 1px at 7% 19%, #fff 98%, transparent),
         radial-gradient(1px 1px at 18% 76%, #d9caff 98%, transparent),
         radial-gradient(1.5px 1.5px at 31% 11%, #fff 98%, transparent),
@@ -54,12 +60,12 @@
         radial-gradient(1px 1px at 61% 28%, #d9caff 98%, transparent),
         radial-gradient(1.5px 1.5px at 79% 67%, #fff 98%, transparent),
         radial-gradient(1px 1px at 92% 14%, #fff 98%, transparent);
-      background-size: 370px 310px;
+      background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 370px 310px;
     }
 
     body::after {
       opacity: .22;
-      background-image: radial-gradient(1px 1px at 34% 38%, #dfc9ff 98%, transparent), radial-gradient(1px 1px at 88% 49%, #fff 98%, transparent);
+      background-image: radial-gradient(ellipse at 50% 30%, rgba(242, 132, 158, .2), transparent 52%), radial-gradient(1px 1px at 34% 38%, #dfc9ff 98%, transparent), radial-gradient(1px 1px at 88% 49%, #fff 98%, transparent);
       background-size: 173px 197px;
     }
 
@@ -95,7 +101,7 @@
     .astronaut-cursor.is-hidden { opacity: 0; }
     .astronaut-cursor.is-moving { transform: translate3d(var(--cursor-x), var(--cursor-y), 0) translate(-50%, -50%) rotate(var(--flight-angle, 0rad)); }
 
-    .shell { display: flex; flex: 1; flex-direction: column; width: min(1100px, calc(100% - 48px)); margin: 0 auto; }
+    .shell { position: relative; z-index: 1; display: flex; flex: 1; flex-direction: column; width: min(1100px, calc(100% - 48px)); margin: 0 auto; }
 
     .topbar {
       display: flex;
@@ -103,6 +109,8 @@
       justify-content: space-between;
       padding: 28px 0 20px;
       border-bottom: 1px solid rgba(218, 198, 244, .13);
+      background: linear-gradient(110deg, rgba(10, 12, 31, .72), rgba(34, 22, 52, .5));
+      backdrop-filter: blur(18px) saturate(135%);
     }
 
     .brand { display: flex; align-items: center; gap: 12px; }
@@ -131,6 +139,11 @@
       scrollbar-color: rgba(207, 180, 240, .72) rgba(53, 42, 67, .8);
       scrollbar-width: auto;
       isolation: isolate;
+      border: 1px solid rgba(232, 216, 255, .2);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(12, 14, 35, .55), rgba(37, 24, 56, .42));
+      box-shadow: 0 22px 60px rgba(2, 3, 16, .38), inset 0 1px rgba(255, 255, 255, .12);
+      backdrop-filter: blur(18px) saturate(145%);
     }
 
     .map {
@@ -143,6 +156,37 @@
       height: 500px;
       padding: 28px 30px 16px;
       isolation: isolate;
+      z-index: 1;
+    }
+
+    .map::before {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: 24px;
+      background-image:
+        radial-gradient(ellipse at 50% 108%, rgba(255, 157, 124, .44), transparent 46%),
+        radial-gradient(circle at 20% 71%, #ffd39a 0 8px, #e99491 9px 11px, rgba(222, 133, 147, .36) 12px 17px, transparent 18px),
+        radial-gradient(circle at 31% 77%, #b6e3ef 0 7px, #78a8c2 8px 10px, rgba(113, 162, 196, .38) 11px 16px, transparent 17px),
+        radial-gradient(circle at 41% 71%, #efc2f0 0 15px, #bb82c7 16px 19px, rgba(173, 114, 184, .42) 20px 28px, transparent 29px),
+        radial-gradient(circle at 51% 77%, #f3d291 0 8px, #df9a7e 9px 11px, rgba(217, 139, 132, .4) 12px 17px, transparent 18px),
+        radial-gradient(circle at 61% 71%, #a8dff0 0 18px, #729bc8 19px 22px, rgba(108, 137, 198, .4) 23px 31px, transparent 32px),
+        radial-gradient(circle at 72% 77%, #f5b7cf 0 7px, #bb81b1 8px 10px, transparent 15px),
+        radial-gradient(circle at 81% 71%, #f6c18c 0 13px, #d8888d 14px 16px, rgba(217, 139, 132, .4) 17px 23px, transparent 24px),
+        radial-gradient(circle at 92% 77%, #a9d4ed 0 10px, #798ec6 11px 14px, rgba(108, 137, 198, .4) 15px 20px, transparent 21px),
+        radial-gradient(1px 1px at 4% 12%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 14% 69%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 24% 48%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 34% 31%, #eadbff 98%, transparent),
+        radial-gradient(1.5px 1.5px at 44% 91%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 54% 58%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 64% 12%, #eadbff 98%, transparent),
+        radial-gradient(1.5px 1.5px at 74% 68%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 84% 41%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 96% 61%, #eadbff 98%, transparent);
+      background-repeat: no-repeat;
+      content: "";
+      pointer-events: none;
     }
 
     .trail {
@@ -157,7 +201,7 @@
     }
 
     .map-scroll::-webkit-scrollbar { height: 12px; }
-    .map-scroll::-webkit-scrollbar-track { border-radius: 8px; background: rgba(53, 42, 67, .8); }
+    .map-scroll::-webkit-scrollbar-track { border-radius: 8px; background: rgba(6, 8, 25, .72); box-shadow: inset 0 0 0 1px rgba(229, 213, 255, .12); }
     .map-scroll::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 8px; background: rgba(207, 180, 240, .72); background-clip: padding-box; }
 
     .trail path {
@@ -191,8 +235,9 @@
       height: 68px;
       place-items: center;
       border: 1px solid rgba(225, 203, 250, .5);
-      background: linear-gradient(145deg, rgba(79, 55, 104, .55), rgba(34, 23, 49, .91));
+      background: linear-gradient(145deg, rgba(179, 143, 225, .24), rgba(15, 16, 38, .82));
       box-shadow: 0 0 24px rgba(176, 129, 224, .13), inset 0 0 16px rgba(226, 202, 255, .08);
+      backdrop-filter: blur(12px) saturate(150%);
       cursor: pointer;
       transform: rotate(45deg);
       transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
@@ -218,8 +263,8 @@
     .diamond:hover, .diamond:focus-visible, .checkpoint.is-open .diamond { z-index: 3; border-color: #f0d4ff; box-shadow: 0 0 34px rgba(198, 150, 255, .42), inset 0 0 22px rgba(245, 231, 255, .21); transform: rotate(45deg) scale(1.2); }
     .diamond:focus-visible, .close:focus-visible, .action:focus-visible, .back:focus-visible { outline: 2px solid #f2d4ff; outline-offset: 5px; }
 
-    .checkpoint-label { margin-top: 21px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: 16px; }
-    .checkpoint-concept { margin-top: 5px; color: var(--quiet); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+    .checkpoint-label { margin-top: 21px; padding: 4px 10px; border: 1px solid rgba(236, 220, 255, .12); border-radius: 999px; color: var(--ink); background: rgba(10, 12, 30, .65); box-shadow: 0 5px 18px rgba(2, 3, 16, .25); font-family: Georgia, "Times New Roman", serif; font-size: 16px; backdrop-filter: blur(12px); }
+    .checkpoint-concept { margin-top: 5px; padding: 3px 8px; border: 1px solid rgba(236, 220, 255, .1); border-radius: 999px; color: #d5c8e8; background: rgba(10, 12, 30, .62); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; backdrop-filter: blur(12px); }
     .work-constellation { display: block; width: 100px; height: 78px; margin-top: 9px; overflow: visible; color: var(--gold); filter: drop-shadow(0 0 4px rgba(245, 211, 123, .4)); }
     .work-constellation path, .work-constellation circle, .work-constellation rect, .work-constellation line, .work-constellation polyline, .work-constellation ellipse {
       fill: none;
@@ -235,11 +280,15 @@
       left: 23px;
       width: 180px;
       height: 140.4px;
-      z-index: 0;
+      z-index: 2;
       margin: 0;
-      transform: rotate(45deg);
-      transform-origin: center;
       pointer-events: none;
+      padding: 12px;
+      border: 1px solid rgba(238, 220, 255, .26);
+      border-radius: 22px;
+      background: rgba(10, 12, 30, .46);
+      box-shadow: 0 12px 34px rgba(1, 2, 14, .45), inset 0 1px rgba(255, 255, 255, .16);
+      backdrop-filter: blur(14px) saturate(150%);
     }
     .preview {
       position: absolute;
@@ -322,7 +371,8 @@
     .pixel-scene[data-scene="mission-control"] { background-color: #142440; background-image: radial-gradient(circle at 76% 23%, #f4d37a 0 2px, transparent 3px), radial-gradient(circle at 83% 34%, #b4d9ff 0 2px, transparent 3px), radial-gradient(circle at 68% 42%, #d9c7ff 0 2px, transparent 3px), linear-gradient(90deg, transparent 8%, rgba(77, 189, 218, .2) 8% 9%, transparent 9% 28%, rgba(77, 189, 218, .14) 28% 53%, transparent 53%); }
     .pixel-scene[data-scene="space-station"] { background-color: #161d3d; background-image: radial-gradient(circle at 15% 26%, #fff 0 1px, transparent 2px), radial-gradient(circle at 82% 16%, #f4d37a 0 2px, transparent 3px), radial-gradient(circle at 76% 42%, #fff 0 1px, transparent 2px), linear-gradient(90deg, transparent 8%, rgba(107, 150, 208, .18) 8% 9%, transparent 9% 28%, rgba(107, 150, 208, .15) 28% 56%, transparent 56%); }
     .pixel-scene[data-scene="wind-tunnel"] { background-color: #243444; background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(190, 214, 229, .16) 40px 44px), repeating-linear-gradient(0deg, transparent 0 54px, rgba(190, 214, 229, .13) 55px 59px), radial-gradient(ellipse at 50% 80%, #637381, transparent 60%); }
-    .pixel-meadow { position: absolute; inset: 0; z-index: 0; display: none; width: 100%; height: 100%; shape-rendering: crispEdges; }
+    .pixel-meadow { position: absolute; inset: 0; z-index: 0; display: none; width: 100%; height: 100%; shape-rendering: crispEdges; background-color: #9cdef3; background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(214, 251, 174, .15) 27px 28px), linear-gradient(180deg, transparent 0 46%, #79c877 47% 51%, #58ae63 52% 100%), radial-gradient(ellipse at 22% 50%, #fff 0 15px, transparent 16px), radial-gradient(ellipse at 17% 47%, #fff 0 10px, transparent 11px), radial-gradient(ellipse at 27% 51%, #f6fbf2 0 9px, transparent 10px), radial-gradient(ellipse at 70% 31%, #fff 0 15px, transparent 16px), radial-gradient(ellipse at 65% 28%, #fff 0 10px, transparent 11px), radial-gradient(ellipse at 76% 32%, #f6fbf2 0 9px, transparent 10px); background-size: 100% 100%, 100% 100%, calc(360px * var(--meadow-cloud-scale, 1)) calc(140px * var(--meadow-cloud-scale, 1)), calc(360px * var(--meadow-cloud-scale, 1)) calc(140px * var(--meadow-cloud-scale, 1)), calc(360px * var(--meadow-cloud-scale, 1)) calc(140px * var(--meadow-cloud-scale, 1)), calc(360px * var(--meadow-cloud-scale, 1)) calc(140px * var(--meadow-cloud-scale, 1)), calc(360px * var(--meadow-cloud-scale, 1)) calc(140px * var(--meadow-cloud-scale, 1)), calc(360px * var(--meadow-cloud-scale, 1)) calc(140px * var(--meadow-cloud-scale, 1)); background-repeat: repeat, no-repeat, repeat, repeat, repeat, repeat, repeat, repeat; }
+    .pixel-meadow > :not(#planted-trees) { display: none; }
     .pixel-scene[data-scene="meadow"] { min-height: 360px; background: #83cdeb; }
     .pixel-scene[data-scene="meadow"]::before, .pixel-scene[data-scene="meadow"]::after { display: none; }
     .pixel-scene[data-scene="meadow"] .pixel-meadow { display: block; }
@@ -332,14 +382,18 @@
     .pixel-character { position: relative; z-index: 1; width: 144px; height: 144px; margin-bottom: 0; image-rendering: pixelated; filter: drop-shadow(0 4px 0 rgba(15, 10, 25, .42)); }
     .pixel-character.planting-walk { position: absolute; bottom: 0; left: var(--plant-x, 50%); margin: 0; transform: translateX(-50%); transition: left .22s steps(4, end); }
     .pixel-character.planting { animation: chibi-plant .22s steps(2, end) infinite alternate; }
+    .pixel-character.mission-celebrate { animation: mission-celebrate .5s ease-in-out 2; }
     .pixel-character .sweat-drop { opacity: 0; }
     .pixel-character.show-sweat .sweat-drop { animation: sweat-drop 1s ease-out forwards; }
-    .pixel-meadow { transform: scale(var(--meadow-scale, 1)); transform-origin: center; transition: transform .5s ease; }
     @keyframes chibi-plant { to { translate: 0 -4px; } }
+    @keyframes mission-celebrate { 50% { translate: 0 -7px; filter: drop-shadow(0 0 12px rgba(255, 224, 138, .8)); } }
     @keyframes sweat-drop { 15%, 85% { opacity: 1; } }
     .planted-tree .tree-growth { opacity: 0; transform-box: fill-box; transform-origin: center bottom; transform: scaleY(0); }
     .planted-tree.grown .tree-growth { animation: sapling-grow .38s steps(5, end) forwards; }
     .planted-tree { transition: transform .5s ease; }
+    .mission-result { position: absolute; top: 48px; right: 12px; z-index: 2; max-width: min(58%, 270px); padding: 7px 10px; border: 1px solid rgba(240, 225, 255, .28); border-radius: 12px; color: #f6edff; background: rgba(12, 15, 35, .76); box-shadow: 0 6px 18px rgba(7, 9, 25, .24); font-size: 11px; line-height: 1.4; opacity: 0; transform: translateY(5px) scale(.96); pointer-events: none; }
+    .mission-result.visible { animation: mission-result-pop 2.4s ease forwards; }
+    @keyframes mission-result-pop { 12%, 82% { opacity: 1; transform: translateY(0) scale(1); } }
     @keyframes sapling-grow { to { opacity: 1; transform: scaleY(1); } }
     @media (max-width: 700px) {
       .pixel-scene[data-scene="meadow"] { min-height: 320px; }
@@ -528,6 +582,7 @@
             <div class="pixel-scene" id="pixel-scene" data-scene="space-station">
               <span class="pixel-room-label" id="pixel-room-label"></span>
               <span class="plant-counter" id="plant-counter" aria-hidden="true" hidden></span>
+              <span class="mission-result" id="mission-result" aria-live="polite"></span>
               <div class="pixel-window" aria-hidden="true"></div>
               <svg class="pixel-meadow" viewBox="0 0 320 180" preserveAspectRatio="none" aria-hidden="true">
                 <rect width="320" height="180" fill="#8dd6f2"/>
@@ -784,7 +839,8 @@
         lesson: "Use print() to show words and numbers on the screen.",
         guide: "Use print() to display a value, such as a word or number.",
         syntax: "print(value)",
-        task: "Use print() to meet Sally!",
+        task: "Show Sally a message about protecting forests with print().",
+        prompts: ["# Share a forest-care message", "print('Plant for the future!')"],
         check: code => /\bprint\s*\(/.test(code)
       },
       variables: {
@@ -792,7 +848,8 @@
         lesson: "A variable gives a name to a value so you can use it later.",
         guide: "Store a value in a named variable so you can use it later.",
         syntax: "name = value",
-        task: "Save an orbital calculation in a variable called orbit, then print it.",
+        task: "Help Katherine record a clean-flight energy reading in orbit, then print it.",
+        prompts: ["# Save a clean-flight reading", "orbit = 'clean energy'", "print(orbit)"],
         check: code => /\borbit\s*=\s*["'][^"']+["']/.test(code) && /\bprint\s*\(\s*orbit\s*\)/.test(code)
       },
       strings: {
@@ -800,7 +857,8 @@
         lesson: "Strings, lists, and tuples are Python collections used to group values.",
         guide: "A list keeps several values together in order. Use its index to get an item.",
         syntax: "items = [value1, value2]\nitems[0]",
-        task: "Make a list called elements with uranium and barium, then print the first item.",
+        task: "Help Lise catalogue materials for responsible research: list uranium and barium, then print the first item.",
+        prompts: ["# Catalogue research materials", "elements = ['uranium', 'barium']", "print(elements[0])"],
         check: code => /\belements\s*=\s*\[[^\]]*["']uranium["'][^\]]*["']barium["'][^\]]*\]/i.test(code) && /\bprint\s*\(\s*elements\s*\[\s*0\s*\]\s*\)/.test(code)
       },
       "for-loops": {
@@ -826,7 +884,8 @@
         lesson: "A while loop repeats code as long as its test is true.",
         guide: "A while loop repeats its indented code while a condition stays true.",
         syntax: "while condition:\n    do_something()",
-        task: "Set count to 5, then use a while loop to print and decrease it to 0 in a rocket countdown.",
+        task: "Help Annie track five reusable battery checks during a clean-energy rocket test.",
+        prompts: ["# Track five clean-energy checks", "count = 5", "while count > 0:", "    print(count)", "    count -= 1"],
         check: code => /\bcount\s*=\s*5\b/.test(code) && /\bwhile\s+count\s*>\s*0\s*:/.test(code) && /\bprint\s*\(\s*count\s*\)/.test(code) && /\bcount\s*-\=\s*1\b/.test(code)
       },
       "if-statements": {
@@ -834,15 +893,17 @@
         lesson: "An if statement runs code only when a test is true.",
         guide: "An if statement runs its indented code only when its condition is true.",
         syntax: "if condition:\n    do_something()",
-        task: "If ready is true, print 'compile'.",
-        check: code => /\bif\s+ready\s*:/.test(code) && /\bprint\s*\(\s*["']compile["']\s*\)/i.test(code)
+        task: "If the renewable-energy system is ready, have Grace print 'conserve'.",
+        prompts: ["# Choose the energy-saving action", "if ready:", "    print('conserve')"],
+        check: code => /\bif\s+ready\s*:/.test(code) && /\bprint\s*\(\s*["']conserve["']\s*\)/i.test(code)
       },
       functions: {
         title: "Functions", concept: "Checkpoint 07 · Functions",
         lesson: "A function is a named set of steps you can use again.",
         guide: "Define a function with def, then call its name to run its steps.",
         syntax: "def function_name():\n    do_something()\n\nfunction_name()",
-        task: "Make a function called compute that prints 4, then call it.",
+        task: "Help Dorothy reuse a conservation routine: make compute print 4, then call the function.",
+        prompts: ["# Define a reusable conservation routine", "def compute():", "    print(4)", "", "compute()"],
         check: code => /\bdef\s+compute\s*\(\s*\)\s*:/.test(code) && /\bprint\s*\(\s*4\s*\)/.test(code) && /\bcompute\s*\(\s*\)/.test(code.replace(/\bdef\s+compute\s*\(\s*\)\s*:/, ""))
       },
       dictionaries: {
@@ -850,15 +911,17 @@
         lesson: "A dictionary stores values using named keys.",
         guide: "A dictionary pairs each key with a value. Use a key to look up its value.",
         syntax: "data = {key: value}\ndata[key]",
-        task: "Make a dictionary called tunnel with a 'wind_speed' key, then print its value.",
+        task: "Help Mary organize wind-tunnel data: save a wind_speed reading in tunnel, then print it.",
+        prompts: ["# Organize clean-wind data", "tunnel = {'wind_speed': 12}", "print(tunnel['wind_speed'])"],
         check: code => /\btunnel\s*=\s*\{[^}]*["']wind_speed["']\s*:/.test(code) && /\bprint\s*\(\s*tunnel\s*\[\s*["']wind_speed["']\s*\]\s*\)/.test(code)
       },
       classes: {
         title: "Classes", concept: "Checkpoint 09 · Classes",
         lesson: "A class describes how to make objects with their own data and actions.",
         guide: "A class describes an object type. Create an object by calling the class.",
-        syntax: "class ClassName:\n    pass\n\nobject_name = ClassName()",
-        task: "Make a class called Element, then create a radium object to explore radioactive elements.",
+        syntax: "class Element:\n    pass\n\nradium = Element()",
+        task: "Help Marie model materials for safe stewardship: make an Element class and create a radium object.",
+        prompts: ["# Model a material for safe stewardship", "class Element:", "    pass", "", "radium = Element()"],
         check: code => /\bclass\s+Element\s*[:(]/.test(code) && /\bradium\s*=\s*Element\s*\(/.test(code)
       }
     };
@@ -900,6 +963,16 @@
       functions: { hair: "#292027", skin: "#87523d", clothes: "#587591" },
       dictionaries: { hair: "#392727", skin: "#87523d", clothes: "#3e718d" },
       classes: { hair: "#59483d", skin: "#e1b99e", clothes: "#596c78" }
+    };
+    const missionResults = {
+      print: "Forest-care message shared with the crew.",
+      variables: "Clean-flight energy reading saved.",
+      strings: "Research materials organized for responsible study.",
+      "while-loops": "All five reusable-energy checks are complete.",
+      "if-statements": "Energy-saving action selected.",
+      functions: "Reusable conservation routine is ready.",
+      dictionaries: "Wind data is organized for clean power.",
+      classes: "Material model created for safe stewardship."
     };
     const rocketIllustration = `<path class="rocket-guide" d="M50 8C43 15 38 26 38 39V50L30 60 40 57 43 65 50 61 57 65 60 57 70 60 62 50V39C62 26 57 15 50 8Z"/><path class="rocket-guide" d="M50 29A5 5 0 1 1 50 39A5 5 0 1 1 50 29Z"/><path class="rocket-guide" d="M46 63C45 67 46 71 48 74M50 62V76M54 63C55 67 54 71 52 74"/>`;
     const sallyPortrait = `<div class="preview-art"><span class="preview-tag">NASA photo · Sally Ride</span><img class="portrait portrait-photo" src="assets/sally-ride-portrait.jpg" alt="Sally Ride smiling in her NASA flight suit"></div>`;
@@ -960,7 +1033,9 @@
     const pixelCharacter = document.getElementById("pixel-character");
     const pixelScene = document.getElementById("pixel-scene");
     const plantCounter = document.getElementById("plant-counter");
+    const missionResult = document.getElementById("mission-result");
     const plantedTrees = document.getElementById("planted-trees");
+    const meadowSvg = document.querySelector(".pixel-meadow");
     const firstLoopExample = document.getElementById("first-loop-example");
     const gameTask = document.getElementById("game-task");
     const codePrompt = document.getElementById("code-prompt");
@@ -1028,10 +1103,10 @@
       const code = codeAnswer.value;
       const exampleLineCount = activeId === "for-loops"
         ? forLoopStage === 3 ? 16 : 9
-        : 0;
+        : lessons[activeId]?.prompts?.length ?? 0;
       const lineCount = Math.max(code.split("\n").length, exampleLineCount);
       lineNumbers.textContent = Array.from({ length: lineCount }, (_, index) => index + 1).join("\n");
-      if (activeId === "for-loops") {
+      if (activeId) {
         editorControl.style.setProperty("--editor-content-height", `${lineCount * parseFloat(getComputedStyle(codeAnswer).lineHeight)}px`);
       } else {
         editorControl.style.removeProperty("--editor-content-height");
@@ -1137,21 +1212,23 @@
     }
 
     function updateRangeExamples() {
-      if (activeId !== "for-loops") {
+      if (!activeId) {
         rangeExamples.hidden = true;
         return;
       }
 
-      const examples = [
-        { row: 4, text: "# range(start, stop) includes start" },
-        { row: 5, text: "# stop is excluded (not counted)" },
-        { row: 6, text: "# range(2, 7) -> 2, 3, 4, 5, 6" },
-        { row: 7, text: "# range(start, stop, step) adds step" },
-        { row: 8, text: "# range(1, 10, 3) -> 1, 4, 7" },
-        { row: 9, text: "# range(5, 0, -2) -> 5, 3, 1" }
-      ];
+      const examples = activeId === "for-loops"
+        ? [
+            { row: 4, text: "# range(start, stop) includes start" },
+            { row: 5, text: "# stop is excluded (not counted)" },
+            { row: 6, text: "# range(2, 7) -> 2, 3, 4, 5, 6" },
+            { row: 7, text: "# range(start, stop, step) adds step" },
+            { row: 8, text: "# range(1, 10, 3) -> 1, 4, 7" },
+            { row: 9, text: "# range(5, 0, -2) -> 5, 3, 1" }
+          ]
+        : (lessons[activeId].prompts ?? []).map((text, index) => ({ row: index + 1, text }));
       if (forLoopStage === 3) {
-        examples.push(
+        if (activeId === "for-loops") examples.push(
           { row: 11, text: "↓ Scroll down for range practice" },
           { row: 12, text: "# Choose any tree count (up to 100 per run)" },
           { row: 13, text: "# range(2, 12, 2) plants 5 trees" },
@@ -1161,7 +1238,8 @@
         );
       }
       const rows = codeAnswer.value.split("\n");
-      const promptRows = Array.from({ length: examples[examples.length - 1].row }, () => "");
+      const maxPromptRow = examples[examples.length - 1]?.row ?? 1;
+      const promptRows = Array.from({ length: Math.max(maxPromptRow, codeAnswer.value.split("\n").length) }, () => "");
       for (const example of examples) {
         if (!rows[example.row - 1]) promptRows[example.row - 1] = example.text;
       }
@@ -1342,17 +1420,31 @@
       const trees = [...plantedTrees.children];
       const columns = Math.ceil(Math.sqrt(trees.length * 1.6));
       const rows = Math.ceil(trees.length / columns);
-      const treeScale = Math.min(0.58, 5.8 / columns, 1.74 / rows);
-      const rowSpacing = rows > 1 ? 90 / (rows - 1) : 0;
+      const zoom = Math.max(1, columns * 42 / 320, rows * 72 / 180);
+      const width = 320 * zoom;
+      const height = 180 * zoom;
+      const rowSpacing = rows > 1 ? (height - 90) / (rows - 1) : 0;
+      meadowSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      pixelScene.style.setProperty("--meadow-cloud-scale", `${1 / zoom}`);
 
       trees.forEach((tree, index) => {
         const column = index % columns;
         const row = Math.floor(index / columns);
-        const x = 10 + (column + 0.5) * 300 / columns;
-        const y = 170 - row * rowSpacing;
-        tree.setAttribute("transform", `translate(${x} ${y}) scale(${treeScale})`);
+        const x = (column + 0.5) * width / columns;
+        const y = rows > 1 ? height - 45 - row * rowSpacing : height - 12;
+        tree.setAttribute("transform", `translate(${x} ${y}) scale(0.58)`);
       });
-      pixelScene.style.setProperty("--meadow-scale", `${Math.max(0.58, 1 - trees.length / 240)}`);
+    }
+
+    function resetMeadow() {
+      plantedTrees.replaceChildren();
+      meadowSvg.setAttribute("viewBox", "0 0 320 180");
+      pixelScene.classList.remove("practice-zoom");
+      pixelScene.style.removeProperty("--meadow-scale");
+      pixelScene.style.removeProperty("--meadow-cloud-scale");
+      pixelCharacter.style.removeProperty("--plant-x");
+      pixelCharacter.classList.remove("planting", "planting-walk", "show-sweat");
+      plantCounter.hidden = true;
     }
 
     async function animateTreePlanting(count, stage, start, step) {
@@ -1366,14 +1458,18 @@
       const existingCount = plantedTrees.children.length;
       const firstTreeX = stage === 2 ? 22 : count === 1 ? 160 : 36;
       const spacing = count === 1 ? 0 : (stage === 2 ? 276 : 248) / (count - 1);
-      const rowY = stage === 2 ? 170 : 132;
+      const rowY = 170;
       const treeScale = stage === 2 ? 0.88 : 0.58;
 
       for (let index = 0; index < count; index += 1) {
+        const totalTrees = existingCount + count;
+        const practiceColumns = Math.ceil(Math.sqrt(totalTrees * 1.6));
+        const practiceRows = Math.ceil(totalTrees / practiceColumns);
+        const practiceZoom = Math.max(1, practiceColumns * 42 / 320, practiceRows * 72 / 180);
         const treeX = stage === 3
-          ? 10 + ((existingCount + index) % Math.ceil(Math.sqrt((existingCount + count) * 1.6)) + 0.5) * 300 / Math.ceil(Math.sqrt((existingCount + count) * 1.6))
+          ? ((existingCount + index) % practiceColumns + 0.5) * (320 * practiceZoom) / practiceColumns
           : firstTreeX + spacing * index;
-        const characterX = 14 + treeX / 320 * 72;
+        const characterX = 14 + treeX / (320 * (stage === 3 ? practiceZoom : 1)) * 72;
         pixelCharacter.style.setProperty("--plant-x", `${characterX}%`);
         const iterationValue = start + BigInt(index) * step;
         plantCounter.textContent = `Tree ${existingCount + index + 1} · range value ${iterationValue}`;
@@ -1421,7 +1517,7 @@
         constellation.setAttribute("viewBox", "0 0 100 78");
         constellation.setAttribute("role", "img");
         constellation.setAttribute("aria-label", "Rocket ship");
-        constellation.innerHTML = rocketIllustration;
+        constellation.innerHTML = `<g transform="rotate(45 50 39)">${rocketIllustration}</g>`;
         document.body.append(constellation);
         for (const outline of constellation.querySelectorAll(".rocket-guide")) {
           const stars = [];
@@ -1446,7 +1542,7 @@
       activeId = id;
       document.body.classList.add("workspace-active");
       astronautCursor.classList.add("is-hidden");
-      editorControl.classList.toggle("range-editor", id === "for-loops");
+      editorControl.classList.add("range-editor");
       const lesson = lessons[id];
       document.getElementById("game-title").textContent = lesson.title;
       document.getElementById("game-concept").textContent = lesson.concept;
@@ -1480,7 +1576,9 @@
       }
       pixelCharacter.classList.remove("planting", "planting-walk", "show-sweat");
       pixelCharacter.style.removeProperty("--plant-x");
-      if (isForLoops && forLoopStage === 1) plantedTrees.replaceChildren();
+      missionResult.classList.remove("visible");
+      missionResult.textContent = "";
+      if (isForLoops) resetMeadow();
       pixelCharacter.setAttribute("aria-label", `Pixel-art cartoon of ${guide.name} in the ${guide.environment.toLowerCase()}`);
       codeAnswer.value = "";
       codeAnswer.placeholder = "";
@@ -1621,6 +1719,13 @@
       document.getElementById("progress-fill").style.width = `${completed.size / checkpoints.length * 100}%`;
       feedback.textContent = "That's it! Checkpoint complete, star earned.";
       feedback.classList.add("success");
+      pixelCharacter.classList.remove("mission-celebrate");
+      void pixelCharacter.getBoundingClientRect();
+      pixelCharacter.classList.add("mission-celebrate");
+      missionResult.textContent = missionResults[activeId];
+      missionResult.classList.remove("visible");
+      void missionResult.getBoundingClientRect();
+      missionResult.classList.add("visible");
     });
   </script>
 </body>
