@@ -167,6 +167,7 @@
       z-index: -1;
       width: 1800px;
       height: 500px;
+      display: none;
       overflow: visible;
       pointer-events: none;
     }
@@ -349,8 +350,8 @@
     .pixel-scene[data-scene="wind-tunnel"] { background-color: #243444; background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(190, 214, 229, .16) 40px 44px), repeating-linear-gradient(0deg, transparent 0 54px, rgba(190, 214, 229, .13) 55px 59px), radial-gradient(ellipse at 50% 80%, #637381, transparent 60%); }
     .pixel-meadow { position: absolute; inset: 0; z-index: 1; display: none; width: 100%; height: 100%; shape-rendering: crispEdges; }
     .pixel-meadow > :not(#planted-trees) { display: none; }
-    .pixel-scene[data-scene="meadow"] { min-height: 360px; background: #83cdeb; }
-    .pixel-scene[data-scene="meadow"]::before { inset: -28px 0 0; display: block; height: auto; border: 0; background-color: #9cdef3; background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(214, 251, 174, .15) 27px 28px), linear-gradient(180deg, transparent 0 42%, #79c877 43% 47%, #58ae63 48% 100%); }
+    .pixel-scene[data-scene="meadow"] { min-height: 360px; background: #58a85b; }
+    .pixel-scene[data-scene="meadow"]::before { inset: -28px 0 0; display: block; height: auto; border: 0; background-color: #58a85b; background-image: repeating-linear-gradient(0deg, transparent 0 26px, rgba(214, 251, 174, .15) 27px 28px), linear-gradient(180deg, #79c877 0 5%, #63b765 5% 48%, #58ae63 48% 100%); }
     .pixel-scene[data-scene="meadow"]::after { display: none; }
     .pixel-scene[data-scene="meadow"] .pixel-meadow { display: block; }
     .pixel-scene[data-scene="meadow"] .pixel-window { display: none; }
@@ -1499,12 +1500,11 @@
     }
 
     async function animateTreePlanting(count, stage, start, step) {
-      if (stage === 1) plantedTrees.replaceChildren();
+      resetMeadow();
       pixelCharacter.classList.add("planting-walk");
       pixelCharacter.classList.add("planting");
       if (stage === 3) {
         pixelScene.classList.add("practice-zoom");
-        arrangePracticeTrees();
       }
       const existingCount = plantedTrees.children.length;
       const firstTreeX = stage === 2 ? 22 : count === 1 ? 160 : 36;
@@ -1765,9 +1765,10 @@
             updateCodePreview();
             feedback.textContent = "Both loops complete! Try your own start, stop, and step values.";
             feedback.classList.add("success");
-            document.getElementById("back-button").classList.add("return-glitter");
           } else {
-            feedback.textContent = `You planted ${result.count} trees. Change start, stop, and step to try another loop.`;
+            feedback.textContent = "Mission complete! You planted trees with three different for loops.";
+            feedback.classList.add("success");
+            document.getElementById("back-button").classList.add("return-glitter");
           }
         } finally {
           planting = false;
