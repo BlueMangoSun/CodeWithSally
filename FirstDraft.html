@@ -359,6 +359,10 @@
     textarea::placeholder { color: rgba(239, 229, 251, .42); opacity: 1; }
     textarea:focus { outline: none; }
     .code-prompt { position: absolute; top: 15px; right: 15px; left: 57px; margin: 0; overflow: hidden; color: rgba(239, 229, 251, .42); font: 13px/1.65 "SFMono-Regular", Consolas, monospace; white-space: pre; pointer-events: none; }
+    .code-keyword { color: #ffe08a; }
+    .code-variable { color: #82eaff; }
+    .code-function { color: #a4f58d; }
+    .code-number { color: #ff9acb; }
     .code-prompt[hidden] { display: none; }
     .code-diagnostic { position: absolute; z-index: 2; max-width: 48%; margin: 0; color: #ff666f; font: 12px/1.5 "SFMono-Regular", Consolas, monospace; white-space: normal; pointer-events: none; }
     .code-diagnostic[hidden] { display: none; }
@@ -369,6 +373,10 @@
     .feedback { min-height: 20px; margin: 0; color: var(--muted); font-size: 11px; }
     .feedback.error-hint { color: #ff9298; }
     .feedback.success { color: var(--gold); }
+    .concept-guide { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .7fr); gap: 16px 28px; margin-top: 18px; padding: 18px 20px; border: 1px solid rgba(218, 198, 244, .16); border-left: 2px solid #c7a4ed; border-radius: 4px; background: rgba(26, 18, 39, .72); }
+    .concept-guide h3 { grid-column: 1 / -1; margin: 0; color: #e9d7fa; font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; }
+    .concept-guide p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .concept-guide pre { margin: 0; padding: 10px 12px; overflow-x: auto; border: 1px solid rgba(218, 198, 244, .12); color: #d8c5ef; background: rgba(12, 9, 19, .48); font: 12px/1.6 "SFMono-Regular", Consolas, monospace; white-space: pre; }
 
     @media (max-width: 700px) {
       .shell { width: min(100% - 32px, 520px); }
@@ -386,6 +394,8 @@
       .pixel-scene { min-height: 210px; }
       .editor-control { min-height: 210px; }
       textarea { min-height: 210px; }
+      .concept-guide { grid-template-columns: 1fr; gap: 10px; padding: 15px; }
+      .concept-guide h3 { grid-column: auto; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -700,6 +710,11 @@
             <div class="game-actions"><button class="action" id="check-button" type="button">Check code</button><p class="feedback" id="feedback" role="status" aria-live="polite"></p></div>
           </section>
         </div>
+        <section class="concept-guide" aria-labelledby="guide-heading">
+          <h3 id="guide-heading">Concept guide</h3>
+          <p id="guide-description"></p>
+          <pre><code id="guide-syntax"></code></pre>
+        </section>
       </div>
     </div>
   </section>
@@ -749,54 +764,82 @@
       print: {
         title: "Print", concept: "Checkpoint 01 · Print",
         lesson: "Use print() to show words and numbers on the screen.",
+        guide: "Use print() to display a value, such as a word or number.",
+        syntax: "print(value)",
         task: "Use print() to meet Sally!",
         check: code => /\bprint\s*\(/.test(code)
       },
       variables: {
         title: "Variables", concept: "Checkpoint 02 · Variables",
         lesson: "A variable gives a name to a value so you can use it later.",
+        guide: "Store a value in a named variable so you can use it later.",
+        syntax: "name = value",
         task: "Save an orbital calculation in a variable called orbit, then print it.",
         check: code => /\borbit\s*=\s*["'][^"']+["']/.test(code) && /\bprint\s*\(\s*orbit\s*\)/.test(code)
       },
       strings: {
         title: "Collections", concept: "Checkpoint 03 · Collections",
         lesson: "Strings, lists, and tuples are Python collections used to group values.",
+        guide: "A list keeps several values together in order. Use its index to get an item.",
+        syntax: "items = [value1, value2]\nitems[0]",
         task: "Make a list called elements with uranium and barium, then print the first item.",
         check: code => /\belements\s*=\s*\[[^\]]*["']uranium["'][^\]]*["']barium["'][^\]]*\]/i.test(code) && /\bprint\s*\(\s*elements\s*\[\s*0\s*\]\s*\)/.test(code)
       },
       "for-loops": {
         title: "For Loops", concept: "Checkpoint 04 · For Loops",
         lesson: "A for loop repeats code for each item in a sequence.",
+        guide: "A for loop repeats its indented code. range(stop) counts from 0 up to, but not including, stop. For example, range(3) gives 0, 1, 2, so the loop runs three times. You can start at another number with range(start, stop), and choose a step with range(start, stop, step).",
+        syntaxParts: [
+          { text: "for ", className: "code-keyword" },
+          { text: "variable", className: "code-variable" },
+          { text: " in " },
+          { text: "range", className: "code-function" },
+          { text: "(" },
+          { text: "stop", className: "code-number" },
+          { text: "):\n    " },
+          { text: "do_something", className: "code-function" },
+          { text: "()" }
+        ],
         task: "Use a for loop to plant trees with the Green Belt Movement.",
         check: code => /\bfor\s+\w+\s+in\s+range\s*\(/.test(code) && /\bplant_trees\s*\(\s*\)/.test(code)
       },
       "while-loops": {
         title: "While Loops", concept: "Checkpoint 05 · While Loops",
         lesson: "A while loop repeats code as long as its test is true.",
+        guide: "A while loop repeats its indented code while a condition stays true.",
+        syntax: "while condition:\n    do_something()",
         task: "Set count to 5, then use a while loop to print and decrease it to 0 in a rocket countdown.",
         check: code => /\bcount\s*=\s*5\b/.test(code) && /\bwhile\s+count\s*>\s*0\s*:/.test(code) && /\bprint\s*\(\s*count\s*\)/.test(code) && /\bcount\s*-\=\s*1\b/.test(code)
       },
       "if-statements": {
         title: "If Statements", concept: "Checkpoint 06 · If Statements",
         lesson: "An if statement runs code only when a test is true.",
+        guide: "An if statement runs its indented code only when its condition is true.",
+        syntax: "if condition:\n    do_something()",
         task: "If ready is true, print 'compile'.",
         check: code => /\bif\s+ready\s*:/.test(code) && /\bprint\s*\(\s*["']compile["']\s*\)/i.test(code)
       },
       functions: {
         title: "Functions", concept: "Checkpoint 07 · Functions",
         lesson: "A function is a named set of steps you can use again.",
+        guide: "Define a function with def, then call its name to run its steps.",
+        syntax: "def function_name():\n    do_something()\n\nfunction_name()",
         task: "Make a function called compute that prints 4, then call it.",
         check: code => /\bdef\s+compute\s*\(\s*\)\s*:/.test(code) && /\bprint\s*\(\s*4\s*\)/.test(code) && /\bcompute\s*\(\s*\)/.test(code.replace(/\bdef\s+compute\s*\(\s*\)\s*:/, ""))
       },
       dictionaries: {
         title: "Dictionaries", concept: "Checkpoint 08 · Dictionaries",
         lesson: "A dictionary stores values using named keys.",
+        guide: "A dictionary pairs each key with a value. Use a key to look up its value.",
+        syntax: "data = {key: value}\ndata[key]",
         task: "Make a dictionary called tunnel with a 'wind_speed' key, then print its value.",
         check: code => /\btunnel\s*=\s*\{[^}]*["']wind_speed["']\s*:/.test(code) && /\bprint\s*\(\s*tunnel\s*\[\s*["']wind_speed["']\s*\]\s*\)/.test(code)
       },
       classes: {
         title: "Classes", concept: "Checkpoint 09 · Classes",
         lesson: "A class describes how to make objects with their own data and actions.",
+        guide: "A class describes an object type. Create an object by calling the class.",
+        syntax: "class ClassName:\n    pass\n\nobject_name = ClassName()",
         task: "Make a class called Element, then create a radium object to explore radioactive elements.",
         check: code => /\bclass\s+Element\s*[:(]/.test(code) && /\bradium\s*=\s*Element\s*\(/.test(code)
       }
@@ -1052,19 +1095,51 @@
       }
 
       let remainder = starter.slice(typed.length);
+      let promptStart = typed.length;
       const lines = typed.split("\n");
       let row = lines.length - 1;
       let column = lines[lines.length - 1].length;
       if (remainder.startsWith("\n")) {
         remainder = remainder.slice(1);
+        promptStart += 1;
         row += 1;
         column = 0;
       }
       const fontSize = parseFloat(getComputedStyle(codeAnswer).fontSize);
-      codePrompt.textContent = remainder;
+      const promptParts = [
+        { text: "for ", className: "code-keyword" },
+        { text: "seed", className: "code-variable" },
+        { text: " in " },
+        { text: "range", className: "code-function" },
+        { text: "(" },
+        { text: "3", className: "code-number" },
+        { text: "):\n    " },
+        { text: "plant_trees", className: "code-function" },
+        { text: "()" }
+      ];
+      renderCodeParts(codePrompt, promptParts, promptStart);
       codePrompt.style.top = `${15 + row * fontSize * 1.65}px`;
       codePrompt.style.left = `${57 + column * fontSize * 0.602}px`;
       codePrompt.hidden = !remainder;
+    }
+
+    function renderCodeParts(target, parts, startIndex = 0) {
+      target.replaceChildren();
+      let position = 0;
+      for (const part of parts) {
+        const visibleText = part.text.slice(Math.max(0, startIndex - position));
+        if (visibleText) {
+          if (part.className) {
+            const span = document.createElement("span");
+            span.className = part.className;
+            span.textContent = visibleText;
+            target.append(span);
+          } else {
+            target.append(document.createTextNode(visibleText));
+          }
+        }
+        position += part.text.length;
+      }
     }
 
     function getLoopIterationCount(code) {
@@ -1198,6 +1273,10 @@
       document.getElementById("game-title").textContent = lesson.title;
       document.getElementById("game-concept").textContent = lesson.concept;
       document.getElementById("game-lesson").textContent = lesson.lesson;
+      document.getElementById("guide-description").textContent = lesson.guide;
+      const guideSyntax = document.getElementById("guide-syntax");
+      if (lesson.syntaxParts) renderCodeParts(guideSyntax, lesson.syntaxParts);
+      else guideSyntax.textContent = lesson.syntax;
       const isForLoops = id === "for-loops";
       gameTask.textContent = isForLoops && forLoopStage === 2
         ? "Now plant 6 trees. Use a for loop to repeat the planting steps."
