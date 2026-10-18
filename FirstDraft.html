@@ -117,6 +117,7 @@
 
     .map-scroll {
       position: relative;
+      z-index: 1;
       flex: 0 0 550px;
       height: 550px;
       margin-top: auto;
@@ -143,7 +144,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 1860px;
+      width: 1680px;
       height: 160px;
       z-index: -1;
       overflow: visible;
@@ -214,8 +215,7 @@
 
     .checkpoint-label { margin-top: 21px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: 16px; }
     .checkpoint-concept { margin-top: 5px; color: var(--quiet); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
-    .work-constellation { display: none; width: 100px; height: 78px; margin-top: 9px; overflow: visible; color: var(--gold); filter: drop-shadow(0 0 4px rgba(245, 211, 123, .4)); }
-    .checkpoint.gold .work-constellation { display: block; }
+    .work-constellation { display: block; width: 100px; height: 78px; margin-top: 9px; overflow: visible; color: var(--gold); filter: drop-shadow(0 0 4px rgba(245, 211, 123, .4)); }
     .work-constellation path, .work-constellation circle, .work-constellation rect, .work-constellation line, .work-constellation polyline, .work-constellation ellipse {
       fill: none;
       stroke: currentColor;
@@ -224,12 +224,13 @@
       stroke-width: 1.5;
     }
     .work-constellation .star { fill: currentColor; stroke: none; }
-    .checkpoint[data-id="print"] .work-constellation {
+    .rocket-constellation {
       position: fixed;
-      bottom: -350px;
-      left: -250px;
-      width: 900px;
-      height: 702px;
+      bottom: 45px;
+      left: 23px;
+      width: 180px;
+      height: 140.4px;
+      z-index: 0;
       margin: 0;
       transform: rotate(45deg);
       transform-origin: center;
@@ -261,10 +262,12 @@
     .preview-art::before { position: absolute; inset: -12px; background: radial-gradient(ellipse at 50% 55%, rgba(244, 201, 255, .32), transparent 52%); content: ""; filter: blur(12px); }
     .portrait { position: relative; width: 128px; height: 150px; margin-top: 10px; filter: drop-shadow(0 0 14px rgba(245, 220, 255, .22)); }
     .portrait-photo { position: relative; width: auto; max-width: 100%; height: 150px; margin: 0; object-fit: contain; object-position: center; filter: none; }
+    .preview-credit { position: absolute; right: 5px; bottom: 4px; z-index: 2; padding: 2px 4px; border-radius: 2px; color: #f1e9fa; background: rgba(16, 11, 28, .78); font-size: 7px; text-decoration: none; }
+    .preview-credit:hover, .preview-credit:focus-visible { text-decoration: underline; }
     .preview h3 { margin: 0 0 5px; font-family: Georgia, "Times New Roman", serif; font-size: 15px; font-weight: 400; }
     .preview p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
     .preview .task-line { margin-top: 7px; color: #e3d1f5; }
-    .preview-tag { position: absolute; top: 10px; left: 12px; z-index: 1; color: #e5d3f9; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; }
+    .preview-tag { position: absolute; top: 10px; left: 12px; z-index: 1; max-width: calc(100% - 24px); overflow: hidden; color: #e5d3f9; font-size: 8px; letter-spacing: 1.5px; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
 
     .legend { position: absolute; right: 0; bottom: 20px; left: 0; z-index: 2; display: flex; justify-content: center; gap: 22px; color: var(--quiet); font-size: 10px; letter-spacing: .7px; text-transform: uppercase; }
     .legend span { display: inline-flex; align-items: center; gap: 7px; }
@@ -325,7 +328,7 @@
         <span class="brand-mark" aria-hidden="true">✦</span>
         <div><span class="brand-name">Code with Sally</span><span class="brand-sub">Cosmic code quest</span></div>
       </div>
-      <div class="progress" aria-label="Checkpoint progress">      <span id="progress-count">3 / 10</span><span class="progress-track"><span class="progress-fill" id="progress-fill" style="width: 30%"></span></span></div>
+      <div class="progress" aria-label="Checkpoint progress">      <span id="progress-count">3 / 9</span><span class="progress-track"><span class="progress-fill" id="progress-fill" style="width: 33.333%"></span></span></div>
     </header>
 
     <main>
@@ -337,8 +340,8 @@
 
       <div class="map-scroll" role="region" aria-label="Scrollable coding checkpoints" tabindex="0">
       <section class="map" aria-label="Coding checkpoints">
-        <svg class="trail" viewBox="0 0 1860 160" aria-hidden="true">
-          <path d="M 120 62 L 300 114 L 480 62 L 660 114 L 840 62 L 1020 114 L 1200 62 L 1380 114 L 1560 62 L 1740 114"></path>
+        <svg class="trail" viewBox="0 0 1680 160" aria-hidden="true">
+          <path d="M 120 62 L 300 114 L 480 62 L 660 114 L 840 62 L 1020 114 L 1200 62 L 1380 114 L 1560 62"></path>
         </svg>
         <article class="checkpoint gold" data-id="print">
           <button class="diamond" type="button" aria-label="Open Print checkpoint">
@@ -368,25 +371,18 @@
           <div class="checkpoint-label">For Loops</div><div class="checkpoint-concept">Repeat actions</div>
           <div class="preview" aria-hidden="true"></div>
         </article>
-        <article class="checkpoint" data-id="if-statements">
-          <button class="diamond" type="button" aria-label="Open If Statements checkpoint">
-            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
-          </button>
-          <div class="checkpoint-label">If Statements</div><div class="checkpoint-concept">Make choices</div>
-          <div class="preview" aria-hidden="true"></div>
-        </article>
-        <article class="checkpoint" data-id="lists">
-          <button class="diamond" type="button" aria-label="Open Lists checkpoint">
-            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
-          </button>
-          <div class="checkpoint-label">Lists</div><div class="checkpoint-concept">Store many values</div>
-          <div class="preview" aria-hidden="true"></div>
-        </article>
         <article class="checkpoint" data-id="while-loops">
           <button class="diamond" type="button" aria-label="Open While Loops checkpoint">
             <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
           </button>
           <div class="checkpoint-label">While Loops</div><div class="checkpoint-concept">Repeat with a test</div>
+          <div class="preview" aria-hidden="true"></div>
+        </article>
+        <article class="checkpoint" data-id="if-statements">
+          <button class="diamond" type="button" aria-label="Open If Statements checkpoint">
+            <span class="diamond-inner"><span class="diamond-star" aria-hidden="true">✦</span></span>
+          </button>
+          <div class="checkpoint-label">If Statements</div><div class="checkpoint-concept">Make choices</div>
           <div class="preview" aria-hidden="true"></div>
         </article>
         <article class="checkpoint" data-id="functions">
@@ -485,82 +481,70 @@
       variables: {
         title: "Variables", concept: "Checkpoint 02 · Variables",
         lesson: "A variable gives a name to a value so you can use it later.",
-        task: "Save your name in a variable called name, then print it.",
-        check: code => /\bname\s*=\s*["'][^"']+["']/.test(code) && /\bprint\s*\(\s*name\s*\)/.test(code)
+        task: "Save an orbital calculation in a variable called orbit, then print it.",
+        check: code => /\borbit\s*=\s*["'][^"']+["']/.test(code) && /\bprint\s*\(\s*orbit\s*\)/.test(code)
       },
       strings: {
         title: "Collections", concept: "Checkpoint 03 · Collections",
         lesson: "Strings, lists, and tuples are Python collections used to group values.",
-        task: "Save the word Python in a variable called language, then print it.",
-        check: code => /\blanguage\s*=\s*["']Python["']/.test(code) && /\bprint\s*\(\s*language\s*\)/.test(code)
+        task: "Make a list called elements with uranium and barium, then print the first item.",
+        check: code => /\belements\s*=\s*\[[^\]]*["']uranium["'][^\]]*["']barium["'][^\]]*\]/i.test(code) && /\bprint\s*\(\s*elements\s*\[\s*0\s*\]\s*\)/.test(code)
       },
       "for-loops": {
         title: "For Loops", concept: "Checkpoint 04 · For Loops",
         lesson: "A for loop repeats code for each item in a sequence.",
-        task: "Use a for loop and range() to print the numbers 1 through 5.",
+        task: "Use a for loop to plant trees with the Green Belt Movement.",
         check: code => /\bfor\s+\w+\s+in\s+range\s*\(/.test(code) && /\bprint\s*\(/.test(code)
       },
-      "if-statements": {
-        title: "If Statements", concept: "Checkpoint 05 · If Statements",
-        lesson: "An if statement runs code only when a test is true.",
-        task: "If score is at least 10, print Level up!",
-        check: code => /\bif\s+score\s*>=\s*10\s*:/.test(code) && /\bprint\s*\(/.test(code)
-      },
-      lists: {
-        title: "Lists", concept: "Checkpoint 06 · Lists",
-        lesson: "A list keeps several values together. Use an index to get one item.",
-        task: "Make a list called colors with two colors, then print the first one.",
-        check: code => /\bcolors\s*=\s*\[[^\]]+,\s*[^\]]+\]/.test(code) && /\bprint\s*\(\s*colors\s*\[\s*0\s*\]\s*\)/.test(code)
-      },
       "while-loops": {
-        title: "While Loops", concept: "Checkpoint 07 · While Loops",
+        title: "While Loops", concept: "Checkpoint 05 · While Loops",
         lesson: "A while loop repeats code as long as its test is true.",
-        task: "Use a while loop to print count while it is less than 5. Increase count in the loop.",
-        check: code => /\bwhile\s+count\s*<\s*5\s*:/.test(code) && /\bprint\s*\(\s*count\s*\)/.test(code) && /\bcount\s*\+=\s*1\b/.test(code)
+        task: "Set count to 5, then use a while loop to print and decrease it to 0 in a rocket countdown.",
+        check: code => /\bcount\s*=\s*5\b/.test(code) && /\bwhile\s+count\s*>\s*0\s*:/.test(code) && /\bprint\s*\(\s*count\s*\)/.test(code) && /\bcount\s*-\=\s*1\b/.test(code)
+      },
+      "if-statements": {
+        title: "If Statements", concept: "Checkpoint 06 · If Statements",
+        lesson: "An if statement runs code only when a test is true.",
+        task: "If ready is true, print 'compile'.",
+        check: code => /\bif\s+ready\s*:/.test(code) && /\bprint\s*\(\s*["']compile["']\s*\)/i.test(code)
       },
       functions: {
-        title: "Functions", concept: "Checkpoint 08 · Functions",
+        title: "Functions", concept: "Checkpoint 07 · Functions",
         lesson: "A function is a named set of steps you can use again.",
-        task: "Make a function called greet that prints Hello, then call it.",
-        check: code => /\bdef\s+greet\s*\(\s*\)\s*:/.test(code) && /\bprint\s*\(/.test(code) && /\bgreet\s*\(\s*\)/.test(code.replace(/\bdef\s+greet\s*\(\s*\)\s*:/, ""))
+        task: "Make a function called compute that prints 4, then call it.",
+        check: code => /\bdef\s+compute\s*\(\s*\)\s*:/.test(code) && /\bprint\s*\(\s*4\s*\)/.test(code) && /\bcompute\s*\(\s*\)/.test(code.replace(/\bdef\s+compute\s*\(\s*\)\s*:/, ""))
       },
       dictionaries: {
-        title: "Dictionaries", concept: "Checkpoint 09 · Dictionaries",
+        title: "Dictionaries", concept: "Checkpoint 08 · Dictionaries",
         lesson: "A dictionary stores values using named keys.",
-        task: "Make a person dictionary with a name key, then print that value.",
-        check: code => /\bperson\s*=\s*\{[^}]*["']name["']\s*:/.test(code) && /\bprint\s*\(\s*person\s*\[\s*["']name["']\s*\]\s*\)/.test(code)
+        task: "Make a dictionary called tunnel with a 'wind_speed' key, then print its value.",
+        check: code => /\btunnel\s*=\s*\{[^}]*["']wind_speed["']\s*:/.test(code) && /\bprint\s*\(\s*tunnel\s*\[\s*["']wind_speed["']\s*\]\s*\)/.test(code)
       },
       classes: {
-        title: "Classes", concept: "Checkpoint 10 · Classes",
+        title: "Classes", concept: "Checkpoint 09 · Classes",
         lesson: "A class describes how to make objects with their own data and actions.",
-        task: "Make a class called Dog, then create a Dog object called pet.",
-        check: code => /\bclass\s+Dog\s*[:(]/.test(code) && /\bpet\s*=\s*Dog\s*\(/.test(code)
+        task: "Make a class called Element, then create a radium object to explore radioactive elements.",
+        check: code => /\bclass\s+Element\s*[:(]/.test(code) && /\bradium\s*=\s*Element\s*\(/.test(code)
       }
     };
 
     const portraits = {
       variables: { name: "Katherine Johnson", field: "NASA mathematician", image: "katherine-johnson.jpg" },
       strings: { name: "Lise Meitner", field: "Physicist", image: "lise-meitner.jpg" },
-      "for-loops": { name: "Margaret Hamilton", field: "Apollo software engineer", image: "margaret-hamilton.jpg" },
+      "for-loops": {
+        name: "Wangari Maathai",
+        field: "Green Belt Movement founder",
+        image: "wangari-maathai.jpg",
+        credit: "Photo: Kingkongphoto · CC BY-SA 2.0",
+        creditUrl: "https://commons.wikimedia.org/wiki/File:Wangari_Maathai_in_2001.jpg"
+      },
       "if-statements": { name: "Grace Hopper", field: "Computer scientist", image: "grace-hopper.jpg" },
-      lists: { name: "Mae Jemison", field: "Astronaut and physician", image: "mae-jemison.jpg" },
       "while-loops": { name: "Annie Easley", field: "NASA mathematician", image: "annie-easley.jpg" },
       functions: { name: "Dorothy Vaughan", field: "NASA mathematician", image: "dorothy-vaughan.jpg" },
       dictionaries: { name: "Mary Jackson", field: "NASA engineer", image: "mary-jackson.jpg" },
       classes: { name: "Marie Curie", field: "Physicist and chemist", image: "marie-curie.jpg" }
     };
-    const constellationIllustrations = {
-      print: `<path class="rocket-guide" d="M50 8C43 15 38 26 38 39V50L30 60 40 57 43 65 50 61 57 65 60 57 70 60 62 50V39C62 26 57 15 50 8Z"/><path class="rocket-guide" d="M50 29A5 5 0 1 1 50 39A5 5 0 1 1 50 29Z"/><path class="rocket-guide" d="M46 63C45 67 46 71 48 74M50 62V76M54 63C55 67 54 71 52 74"/>`,
-      variables: `<circle cx="28" cy="18" r="8"/><path d="M21 28q7-5 14 0l4 16-10 5-10-5ZM21 32 12 44l5 3 10-9m12-6 9 11-5 3-10-8M28 49v15m8-15v15m-13 0h19"/><path d="M54 40h32v25H54zM59 46h22M59 51h18M59 56h20M59 61h11M48 34l6-5 6 5"/><circle class="star" cx="16" cy="13" r="1.7"/><circle class="star" cx="76" cy="20" r="1.6"/>`,
-      strings: `<circle cx="30" cy="19" r="8"/><path d="M23 29q7-5 14 0l5 15-11 5-11-5ZM24 33 13 43l4 4 11-7m13-7 10 8-4 4-11-7M31 49v14m8-14v14m-14 0h21"/><path d="M59 60h31M64 59V45l10-12 10 12v14M70 45h9m-11 5h13"/><circle cx="75" cy="36" r="3"/><path d="M76 33l5-7m-8 7-4-7M21 14l-4-4m35 16 5-4"/><circle class="star" cx="57" cy="13" r="1.7"/>`,
-      "for-loops": `<circle cx="29" cy="18" r="8"/><path d="M22 28q7-5 14 0l4 16-11 5-10-5ZM23 32 12 43l4 4 12-8m12-7 10 9-4 4-11-8M29 49v15m8-15v15m-13 0h20"/><rect x="56" y="35" width="31" height="28" rx="2"/><path d="M61 42h18m-18 6h22m-22 6h13m-13 5h19M49 29l7 6m-2-12 5 12"/><circle class="star" cx="76" cy="22" r="1.7"/>`,
-      "if-statements": `<circle cx="30" cy="18" r="8"/><path d="M23 28q7-5 14 0l4 16-11 5-10-5ZM24 32 14 43l4 4 11-8m12-7 9 8-4 4-11-7M30 49v14m8-14v14m-14 0h20"/><rect x="58" y="37" width="29" height="25" rx="2"/><path d="M63 44h7m-7 8h17m-17 5h12M74 43l4 4-4 4M19 17l3-3 3 3-3 3Z"/><circle class="star" cx="80" cy="24" r="1.7"/>`,
-      lists: `<circle cx="31" cy="18" r="8"/><path d="M24 28q7-5 14 0l4 16-11 5-11-5ZM25 32 14 43l4 4 11-8m13-7 9 8-4 4-10-7M31 49v14m8-14v14m-14 0h21"/><path d="M58 63V44q0-5 5-5h24q5 0 5 5v19ZM62 49h8m-8 6h8m-8 6h8m4-12h12m-12 6h12m-12 6h12M28 10l3-5 3 5"/><circle class="star" cx="78" cy="27" r="1.7"/>`,
-      "while-loops": `<circle cx="30" cy="18" r="8"/><path d="M23 28q7-5 14 0l4 16-11 5-10-5ZM24 32 14 43l4 4 11-8m12-7 10 8-4 4-11-7M30 49v14m8-14v14m-14 0h20"/><rect x="59" y="39" width="28" height="23" rx="2"/><path d="M64 45h18m-18 6h12m-12 6h17M18 16l4-4 4 4-4 4ZM73 29a9 9 0 1 1-8 5m0-6v6h6"/><circle class="star" cx="49" cy="19" r="1.7"/>`,
-      functions: `<circle cx="30" cy="18" r="8"/><path d="M23 28q7-5 14 0l4 16-11 5-10-5ZM24 32 14 43l4 4 11-8m12-7 10 8-4 4-11-7M30 49v14m8-14v14m-14 0h20"/><path d="M57 62V43l15-9 15 9v19ZM63 47h18m-18 5h18m-18 5h12M19 16l4-4 4 4-4 4ZM72 26v7m-4-4 4-4 4 4"/><circle class="star" cx="88" cy="26" r="1.6"/>`,
-      dictionaries: `<circle cx="29" cy="18" r="8"/><path d="M22 28q7-5 14 0l4 16-11 5-10-5ZM23 32 13 43l4 4 11-8m12-7 10 8-4 4-11-7M29 49v14m8-14v14m-14 0h20"/><path d="M57 38h31v25H57zM62 44h8v6h-8zm14 0h9m-9 4h9M62 55h8v6h-8zm14 1h9M72 47h3m-3 11h3M17 16l4-4 4 4-4 4Z"/><circle class="star" cx="78" cy="28" r="1.6"/>`,
-      classes: `<circle cx="29" cy="18" r="8"/><path d="M22 28q7-5 14 0l4 16-11 5-10-5ZM23 32 13 43l4 4 11-8m12-7 10 8-4 4-11-7M29 49v14m8-14v14m-14 0h20"/><path d="M58 63V43l14-8 14 8v20ZM63 46h18m-18 6h18m-18 6h12M70 35v-6m-4 3 4-4 4 4M17 16l4-4 4 4-4 4Z"/><circle class="star" cx="87" cy="25" r="1.6"/>`
-    };
+    const rocketIllustration = `<path class="rocket-guide" d="M50 8C43 15 38 26 38 39V50L30 60 40 57 43 65 50 61 57 65 60 57 70 60 62 50V39C62 26 57 15 50 8Z"/><path class="rocket-guide" d="M50 29A5 5 0 1 1 50 39A5 5 0 1 1 50 29Z"/><path class="rocket-guide" d="M46 63C45 67 46 71 48 74M50 62V76M54 63C55 67 54 71 52 74"/>`;
     const sallyPortrait = `<div class="preview-art"><span class="preview-tag">NASA photo · Sally Ride</span><img class="portrait portrait-photo" src="assets/sally-ride-portrait.jpg" alt="Sally Ride smiling in her NASA flight suit"></div>`;
 
     const astronautCursor = document.getElementById("astronaut-cursor");
@@ -615,24 +599,24 @@
       const preview = checkpoint.querySelector(".preview");
       const guide = portraits[checkpoint.dataset.id];
       const guidePortrait = guide
-        ? `<div class="preview-art"><span class="preview-tag">${guide.name} · ${guide.field}</span><img class="portrait portrait-photo" src="assets/${guide.image}" alt="${guide.name}, ${guide.field}"></div>`
+        ? `<div class="preview-art"><span class="preview-tag">${guide.name} · ${guide.field}</span><img class="portrait portrait-photo" src="assets/${guide.image}" alt="${guide.name}, ${guide.field}">${guide.credit ? `<a class="preview-credit" href="${guide.creditUrl}" target="_blank" rel="noopener noreferrer">${guide.credit}</a>` : ""}</div>`
         : sallyPortrait;
       preview.innerHTML = `${guidePortrait}<h3>${lesson.title}</h3><p>${lesson.lesson}</p><p class="task-line">Mission: ${lesson.task}</p>`;
-      const guideName = guide?.name || "Sally Ride";
-      const constellationLabel = checkpoint.dataset.id === "print" ? "Rocket ship" : `${guideName} at work`;
-      checkpoint.querySelector(".checkpoint-concept").insertAdjacentHTML(
-        "afterend",
-        `<svg class="work-constellation" viewBox="0 0 100 78" role="img" aria-label="${constellationLabel}">${constellationIllustrations[checkpoint.dataset.id]}</svg>`
-      );
       if (checkpoint.dataset.id === "print") {
-        const constellation = checkpoint.querySelector(".work-constellation");
+        const constellation = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        constellation.classList.add("work-constellation", "rocket-constellation");
+        constellation.setAttribute("viewBox", "0 0 100 78");
+        constellation.setAttribute("role", "img");
+        constellation.setAttribute("aria-label", "Rocket ship");
+        constellation.innerHTML = rocketIllustration;
+        document.body.append(constellation);
         for (const outline of constellation.querySelectorAll(".rocket-guide")) {
           const stars = [];
           const length = outline.getTotalLength();
           for (let distance = 0; distance < length; distance += 2) {
             const point = outline.getPointAtLength(distance);
             stars.push(
-              `<path class="star" d="M${point.x} ${point.y - 0.35}l.07.14.16.07-.16.07-.07.14-.07-.14-.16-.07.16-.07Z"/>`
+              `<path class="star" d="M${point.x} ${point.y - 1.05}l.21.42.48.21-.48.21-.21.42-.21-.42-.48-.21.48-.21Z"/>`
             );
           }
           outline.insertAdjacentHTML("beforebegin", stars.join(""));
