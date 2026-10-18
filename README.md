@@ -3,7 +3,7 @@ Girl Hoo Hacks Hackathon
 
 # ✦ Code with Sally: Cosmic Code Quest
 
-> An interactive, web-based coding game designed to introduce young learners—especially girls—to Python programming fundamentals through historical STEM pioneers and environmental sustainability actions.
+> An interactive, web-based coding game designed to introduce young learners—especially girls—to Python programming fundamentals through historical STEM pioneers and environmental sustainability simulations.
 
 ---
 
