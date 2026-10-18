@@ -25,10 +25,6 @@ In our featured **For Loops** module, players join **Dr. Wangari Maathai** (foun
 
 ---
 
-## 🚀 Quick Start
-
-Because **Code with Sally** is built entirely using vanilla web technologies, no build steps, package managers (npm), or local servers are required!
-
 ### Running Locally
 
 1. **Clone the repository:**
