@@ -356,11 +356,14 @@
     .editor-control { position: relative; display: flex; min-height: 252px; flex: 1; overflow: hidden; border-bottom: 1px solid rgba(218, 198, 244, .13); background: #110d19; }
     .line-numbers { width: 42px; flex: 0 0 42px; margin: 0; padding: 15px 10px 15px 0; overflow: hidden; color: #746985; background: rgba(255, 255, 255, .025); text-align: right; font: 13px/1.65 "SFMono-Regular", Consolas, monospace; user-select: none; }
     textarea { display: block; width: 100%; min-width: 0; min-height: 252px; flex: 1; resize: vertical; padding: 15px; border: 0; border-radius: 0; color: #efe5fb; background: transparent; font: 13px/1.65 "SFMono-Regular", Consolas, monospace; tab-size: 4; }
+    .editor-control.syntax-preview textarea { color: transparent; caret-color: #efe5fb; }
     textarea::placeholder { color: rgba(239, 229, 251, .42); opacity: 1; }
     textarea:focus { outline: none; }
     .code-prompt { position: absolute; top: 15px; right: 15px; left: 57px; margin: 0; overflow: hidden; color: rgba(239, 229, 251, .42); font: 13px/1.65 "SFMono-Regular", Consolas, monospace; white-space: pre; pointer-events: none; }
+    .code-prompt.syntax-highlight { color: #efe5fb; }
     .code-keyword { color: #ffe08a; }
     .code-variable { color: #82eaff; }
+    .code-builtin { color: #ffb86b; }
     .code-function { color: #a4f58d; }
     .code-number { color: #ff9acb; }
     .code-prompt[hidden] { display: none; }
@@ -793,7 +796,7 @@
           { text: "for ", className: "code-keyword" },
           { text: "variable", className: "code-variable" },
           { text: " in " },
-          { text: "range", className: "code-function" },
+          { text: "range", className: "code-builtin" },
           { text: "(" },
           { text: "stop", className: "code-number" },
           { text: "):\n    " },
@@ -934,6 +937,7 @@
 
     const checkpoints = [...document.querySelectorAll(".checkpoint")];
     const gameScreen = document.getElementById("game-screen");
+    const editorControl = document.querySelector(".editor-control");
     const codeAnswer = document.getElementById("code-answer");
     const lineNumbers = document.getElementById("line-numbers");
     const feedback = document.getElementById("feedback");
@@ -1014,14 +1018,20 @@
       updateCodePrompt();
     }
 
-    function showCodeError(message, hint, code = codeAnswer.value) {
+    function showCodeError(message, hint, code = codeAnswer.value, errorRow = null) {
       const lines = code.split("\n");
-      const row = Math.max(0, lines.length - 1);
-      const column = lines[row].length;
-      const fontSize = parseFloat(getComputedStyle(codeAnswer).fontSize);
+      const row = errorRow === null ? Math.max(0, lines.length - 1) : Math.min(errorRow, lines.length - 1);
+      const styles = getComputedStyle(codeAnswer);
+      const fontSize = parseFloat(styles.fontSize);
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      if (context) context.font = styles.font;
+      const textWidth = context?.measureText(lines[row]).width ?? lines[row].length * fontSize * 0.602;
+      const diagnosticLeft = 57 + textWidth + 8;
       codeDiagnostic.textContent = message;
       codeDiagnostic.style.top = `${15 + row * fontSize * 1.65}px`;
-      codeDiagnostic.style.left = `${57 + column * fontSize * 0.602}px`;
+      codeDiagnostic.style.left = `${diagnosticLeft}px`;
+      codeDiagnostic.style.maxWidth = `${Math.max(0, editorControl.clientWidth - diagnosticLeft - 8)}px`;
       codeDiagnostic.hidden = false;
       feedback.textContent = hint;
       feedback.classList.add("error-hint");
@@ -1033,39 +1043,45 @@
       if (!/^for\s+\w+\s+in\s+range\s*\([^)]*\)\s*:/m.test(normalized)) {
         return {
           message: "Improper for-loop syntax",
-          hint: "Start with for, a variable, in range(...), and a colon."
+          hint: "Start with for, a variable, in range(...), and a colon.",
+          row: 0
         };
       }
       const body = normalized.split("\n")[1] ?? "";
       if (!/plant_trees\s*\(\s*\)/.test(body)) {
         return {
           message: "Missing plant_trees() call",
-          hint: "Add plant_trees() on the indented line inside the loop."
+          hint: "Add plant_trees() on the indented line inside the loop.",
+          row: 1
         };
       }
       if (!/^[ \t]+plant_trees\s*\(\s*\)$/.test(body)) {
         return {
           message: "Improper indentation",
-          hint: "Indent plant_trees() so it is inside the for loop."
+          hint: "Indent plant_trees() so it is inside the for loop.",
+          row: 1
         };
       }
       const count = getLoopIterationCount(normalized);
       if (count.error) {
         return {
           message: count.error.includes("whole numbers") ? "Invalid range() values" : "Invalid loop body",
-          hint: count.error
+          hint: count.error,
+          row: count.error.includes("loop body") ? 1 : 0
         };
       }
       if (forLoopStage === 1 && (count.count !== 3 || normalized !== "for seed in range(3):\n    plant_trees()")) {
         return {
           message: "Loop does not match the three-tree prompt",
-          hint: "Use the exact prompted loop: range(3) with an indented plant_trees() call."
+          hint: "Use the exact prompted loop: range(3) with an indented plant_trees() call.",
+          row: 0
         };
       }
       if (forLoopStage === 2 && count.count !== 6) {
         return {
           message: "Loop must repeat six times",
-          hint: "Change the range so plant_trees() runs exactly 6 times."
+          hint: "Change the range so plant_trees() runs exactly 6 times.",
+          row: 0
         };
       }
       return null;
@@ -1073,63 +1089,92 @@
 
     function updateCodePrompt() {
       if (activeId !== "for-loops") {
+        editorControl.classList.remove("syntax-preview");
+        codePrompt.classList.remove("syntax-highlight");
         codePrompt.hidden = true;
         return;
       }
 
       if (forLoopStage === 2) {
-        codePrompt.textContent = codeAnswer.value
-          ? ""
-          : "Use your first loop as a guide. Change it to plant six trees.";
+        const typed = codeAnswer.value;
+        codePrompt.classList.remove("syntax-highlight");
+        if (typed) {
+          editorControl.classList.add("syntax-preview");
+          codePrompt.classList.add("syntax-highlight");
+          renderLoopCodeHighlight(typed);
+        } else {
+          editorControl.classList.remove("syntax-preview");
+          codePrompt.textContent = "Use your first loop as a guide. Change it to plant six trees.";
+        }
         codePrompt.style.top = "15px";
         codePrompt.style.left = "57px";
-        codePrompt.hidden = Boolean(codeAnswer.value);
+        codePrompt.hidden = false;
         return;
       }
 
       const starter = "for seed in range(3):\n    plant_trees()";
       const typed = codeAnswer.value;
-      if (typed && (!starter.startsWith(typed) || typed === starter)) {
+      codePrompt.classList.remove("syntax-highlight");
+      if (!starter.startsWith(typed)) {
+        editorControl.classList.remove("syntax-preview");
         codePrompt.hidden = true;
         return;
       }
 
-      let remainder = starter.slice(typed.length);
-      let promptStart = typed.length;
-      const lines = typed.split("\n");
-      let row = lines.length - 1;
-      let column = lines[lines.length - 1].length;
-      if (remainder.startsWith("\n")) {
-        remainder = remainder.slice(1);
-        promptStart += 1;
-        row += 1;
-        column = 0;
-      }
-      const fontSize = parseFloat(getComputedStyle(codeAnswer).fontSize);
+      editorControl.classList.add("syntax-preview");
       const promptParts = [
-        { text: "for ", className: "code-keyword" },
+        { text: "for", className: "code-keyword" },
+        { text: " " },
         { text: "seed", className: "code-variable" },
         { text: " in " },
-        { text: "range", className: "code-function" },
+        { text: "range", className: "code-builtin" },
         { text: "(" },
         { text: "3", className: "code-number" },
         { text: "):\n    " },
         { text: "plant_trees", className: "code-function" },
         { text: "()" }
       ];
-      renderCodeParts(codePrompt, promptParts, promptStart);
-      codePrompt.style.top = `${15 + row * fontSize * 1.65}px`;
-      codePrompt.style.left = `${57 + column * fontSize * 0.602}px`;
-      codePrompt.hidden = !remainder;
+      renderCodeParts(codePrompt, promptParts, 0, typed.length);
+      codePrompt.style.top = "15px";
+      codePrompt.style.left = "57px";
+      codePrompt.hidden = false;
     }
 
-    function renderCodeParts(target, parts, startIndex = 0) {
+    function renderLoopCodeHighlight(code) {
+      codePrompt.replaceChildren();
+      const tokenPattern = /\b[A-Za-z_]\w*\b|\b\d+\b/g;
+      let position = 0;
+      for (const match of code.matchAll(tokenPattern)) {
+        const token = match[0];
+        const tokenStart = match.index;
+        if (tokenStart > position) codePrompt.append(document.createTextNode(code.slice(position, tokenStart)));
+        let className = "";
+        if (token === "for") className = "code-keyword";
+        else if (token === "range") className = "code-builtin";
+        else if (token === "plant_trees") className = "code-function";
+        else if (/^\d+$/.test(token)) className = "code-number";
+        else if (token !== "in" && /\bfor\s+$/.test(code.slice(0, tokenStart))) className = "code-variable";
+
+        if (className) {
+          const span = document.createElement("span");
+          span.className = className;
+          span.textContent = token;
+          codePrompt.append(span);
+        } else {
+          codePrompt.append(document.createTextNode(token));
+        }
+        position = tokenStart + token.length;
+      }
+      if (position < code.length) codePrompt.append(document.createTextNode(code.slice(position)));
+    }
+
+    function renderCodeParts(target, parts, startIndex = 0, completedLength = Infinity) {
       target.replaceChildren();
       let position = 0;
       for (const part of parts) {
         const visibleText = part.text.slice(Math.max(0, startIndex - position));
         if (visibleText) {
-          if (part.className) {
+          if (part.className && position + part.text.length <= completedLength) {
             const span = document.createElement("span");
             span.className = part.className;
             span.textContent = visibleText;
@@ -1360,7 +1405,7 @@
             message: "Code does not match the task",
             hint: "Check the loop syntax and make sure plant_trees() is inside the loop."
           };
-          showCodeError(error.message, error.hint, submittedCode);
+          showCodeError(error.message, error.hint, submittedCode, error.row);
         } else {
           showCodeError("Code does not match the task", "Check the mission, spelling, and Python syntax.", submittedCode);
         }
@@ -1370,7 +1415,7 @@
       if (activeId === "for-loops") {
         const loopError = showLoopError(submittedCode);
         if (loopError) {
-          showCodeError(loopError.message, loopError.hint, submittedCode);
+          showCodeError(loopError.message, loopError.hint, submittedCode, loopError.row);
           return;
         }
         const result = getLoopIterationCount(submittedCode);
