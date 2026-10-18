@@ -18,8 +18,7 @@ In our featured **For Loops** module, players join **Dr. Wangari Maathai** (foun
 ## ✨ Features
 
 - **Interactive Constellation Map:** Navigate through 9 core programming concept checkpoints styled after cosmic stars.
-- **Live Pixel-Art Simulation:** Watch code run in real time with animated SVG graphics (e.g., dynamic tree growth in the meadow).
-- **Custom Cursor & Visual FX:** Animated astronaut cursor, custom SVG starfields, and particle celebrations.
+- **Live Pixel-Art Simulation:** Watch code run in real time with animated SVG graphics (Ex. Planting trees).
 - **Scaffolded Progression:** Multi-stage learning loops that move beginners from guided templates to open sandbox exploration.
 - **Instant Diagnostic Feedback:** In-editor syntax error callouts and contextual coding hints.
 - **Real-World Impact:** Prompts players upon loop sandbox completion to discover local tree-planting non-profits and environmental initiatives near them.
