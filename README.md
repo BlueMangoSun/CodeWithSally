@@ -17,11 +17,10 @@ In our featured **For Loops** module, players join **Dr. Wangari Maathai** (foun
 
 - **Interactive Constellation Map:** Navigate through 9 core programming concept checkpoints styled after cosmic stars.
 - **Live Pixel-Art Simulation:** Watch code run in real time with animated SVG graphics (Ex. Planting trees).
-- **Scaffolded Progression:** Multi-stage learning loops that move beginners from guided templates to open sandbox exploration.
-- **Instant Diagnostic Feedback:** In-editor syntax error callouts and contextual coding hints.
-- **Real-World Impact:** Prompts players upon loop sandbox completion to discover local tree-planting non-profits and environmental initiatives near them.
-- **Flying Astronaut Cursor:** Smooth vector astronaut flight path cursor with rotational direction mechanics and hover accessibility controls.
-
+- **Step-By-Step Learning and Exploration Tasks:** Multi-stage learning loops that move beginners from guided templates to open sandbox exploration.
+- **Instant Feedback:** In-editor syntax error callouts and contextual coding hints.
+- **Real-World Impact:** Prompts players to discover environmental initiatives near them (like local tree-planting non-profits).
+- **Flying Astronaut Cursor:** Sally Ride acts as their intergalactic guide as they complete each checkpoint. 
 
 ---
 ## 🚀 Checkpoints & Curriculum
@@ -43,3 +42,5 @@ In our featured **For Loops** module, players join **Dr. Wangari Maathai** (foun
 1. **Clone the repository:**
    ```bash
    git clone [https://github.com/BlueMangoSun/CodeWithSally.git](https://github.com/BlueMangoSun/CodeWithSally.git)
+
+### This ReadMe File was written with Google Gemini 
