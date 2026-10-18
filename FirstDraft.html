@@ -224,6 +224,17 @@
       stroke-width: 1.5;
     }
     .work-constellation .star { fill: currentColor; stroke: none; }
+    .checkpoint[data-id="print"] .work-constellation {
+      position: fixed;
+      bottom: -350px;
+      left: -250px;
+      width: 900px;
+      height: 702px;
+      margin: 0;
+      transform: rotate(45deg);
+      transform-origin: center;
+      pointer-events: none;
+    }
     .preview {
       position: absolute;
       top: 100px;
@@ -255,7 +266,7 @@
     .preview .task-line { margin-top: 7px; color: #e3d1f5; }
     .preview-tag { position: absolute; top: 10px; left: 12px; z-index: 1; color: #e5d3f9; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; }
 
-    .legend { position: absolute; right: 0; bottom: 5px; left: 0; z-index: 2; display: flex; justify-content: center; gap: 22px; color: var(--quiet); font-size: 10px; letter-spacing: .7px; text-transform: uppercase; }
+    .legend { position: absolute; right: 0; bottom: 20px; left: 0; z-index: 2; display: flex; justify-content: center; gap: 22px; color: var(--quiet); font-size: 10px; letter-spacing: .7px; text-transform: uppercase; }
     .legend span { display: inline-flex; align-items: center; gap: 7px; }
     .legend i { width: 8px; height: 8px; display: inline-block; border: 1px solid currentColor; transform: rotate(45deg); }
     .legend .gold-key { color: var(--gold); }
@@ -539,7 +550,7 @@
       classes: { name: "Marie Curie", field: "Physicist and chemist", image: "marie-curie.jpg" }
     };
     const constellationIllustrations = {
-      print: `<circle cx="35" cy="22" r="13"/><path d="M25 18q10-13 20 0M28 33v7l7 5 7-5v-7M24 44l-12 8v13h46V52L46 44M32 45l3 8 4-8M39 54l10 9M31 54l-8 9"/><rect x="58" y="48" width="30" height="19" rx="2"/><path d="M64 54h12m-12 5h7M73 67v4m-8 0h18M11 18l2 4 4 1-4 2-2 4-1-4-4-2 4-1Z"/><circle class="star" cx="79" cy="19" r="1.7"/><circle class="star" cx="91" cy="31" r="1.5"/>`,
+      print: `<path class="rocket-guide" d="M50 8C43 15 38 26 38 39V50L30 60 40 57 43 65 50 61 57 65 60 57 70 60 62 50V39C62 26 57 15 50 8Z"/><path class="rocket-guide" d="M50 29A5 5 0 1 1 50 39A5 5 0 1 1 50 29Z"/><path class="rocket-guide" d="M46 63C45 67 46 71 48 74M50 62V76M54 63C55 67 54 71 52 74"/>`,
       variables: `<circle cx="28" cy="18" r="8"/><path d="M21 28q7-5 14 0l4 16-10 5-10-5ZM21 32 12 44l5 3 10-9m12-6 9 11-5 3-10-8M28 49v15m8-15v15m-13 0h19"/><path d="M54 40h32v25H54zM59 46h22M59 51h18M59 56h20M59 61h11M48 34l6-5 6 5"/><circle class="star" cx="16" cy="13" r="1.7"/><circle class="star" cx="76" cy="20" r="1.6"/>`,
       strings: `<circle cx="30" cy="19" r="8"/><path d="M23 29q7-5 14 0l5 15-11 5-11-5ZM24 33 13 43l4 4 11-7m13-7 10 8-4 4-11-7M31 49v14m8-14v14m-14 0h21"/><path d="M59 60h31M64 59V45l10-12 10 12v14M70 45h9m-11 5h13"/><circle cx="75" cy="36" r="3"/><path d="M76 33l5-7m-8 7-4-7M21 14l-4-4m35 16 5-4"/><circle class="star" cx="57" cy="13" r="1.7"/>`,
       "for-loops": `<circle cx="29" cy="18" r="8"/><path d="M22 28q7-5 14 0l4 16-11 5-10-5ZM23 32 12 43l4 4 12-8m12-7 10 9-4 4-11-8M29 49v15m8-15v15m-13 0h20"/><rect x="56" y="35" width="31" height="28" rx="2"/><path d="M61 42h18m-18 6h22m-22 6h13m-13 5h19M49 29l7 6m-2-12 5 12"/><circle class="star" cx="76" cy="22" r="1.7"/>`,
@@ -608,10 +619,26 @@
         : sallyPortrait;
       preview.innerHTML = `${guidePortrait}<h3>${lesson.title}</h3><p>${lesson.lesson}</p><p class="task-line">Mission: ${lesson.task}</p>`;
       const guideName = guide?.name || "Sally Ride";
+      const constellationLabel = checkpoint.dataset.id === "print" ? "Rocket ship" : `${guideName} at work`;
       checkpoint.querySelector(".checkpoint-concept").insertAdjacentHTML(
         "afterend",
-        `<svg class="work-constellation" viewBox="0 0 100 78" role="img" aria-label="${guideName} at work">${constellationIllustrations[checkpoint.dataset.id]}</svg>`
+        `<svg class="work-constellation" viewBox="0 0 100 78" role="img" aria-label="${constellationLabel}">${constellationIllustrations[checkpoint.dataset.id]}</svg>`
       );
+      if (checkpoint.dataset.id === "print") {
+        const constellation = checkpoint.querySelector(".work-constellation");
+        for (const outline of constellation.querySelectorAll(".rocket-guide")) {
+          const stars = [];
+          const length = outline.getTotalLength();
+          for (let distance = 0; distance < length; distance += 2) {
+            const point = outline.getPointAtLength(distance);
+            stars.push(
+              `<path class="star" d="M${point.x} ${point.y - 0.35}l.07.14.16.07-.16.07-.07.14-.07-.14-.16-.07.16-.07Z"/>`
+            );
+          }
+          outline.insertAdjacentHTML("beforebegin", stars.join(""));
+          outline.remove();
+        }
+      }
       checkpoint.querySelector(".diamond").addEventListener("click", () => openLesson(checkpoint.dataset.id));
       checkpoint.addEventListener("keydown", event => {
         if (event.key === "Escape") checkpoint.classList.remove("is-open");
