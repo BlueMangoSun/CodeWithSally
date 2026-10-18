@@ -1,7 +1,5 @@
-# CodeWithSally
-Girl Hoo Hacks Hackathon
-
 # ✦ Code with Sally: Cosmic Code Quest
+Made for Girl Hoo Hacks Hackathon 2026
 
 > An interactive, web-based coding game designed to introduce young learners—especially girls—to Python programming fundamentals through historical STEM pioneers and environmental sustainability simulations.
 
