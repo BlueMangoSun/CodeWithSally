@@ -73,6 +73,11 @@
     html.astronaut-cursor-enabled .back,
     html.astronaut-cursor-enabled .close { cursor: none; }
 
+    body.workspace-active, body.workspace-active * { cursor: auto !important; }
+    body.workspace-active textarea { cursor: text !important; }
+    body.workspace-active button { cursor: pointer !important; }
+    body.workspace-active .astronaut-cursor { opacity: 0 !important; }
+
     .astronaut-cursor {
       position: fixed;
       top: 0;
@@ -280,30 +285,75 @@
       z-index: 10;
       display: none;
       overflow-y: auto;
-      padding: 28px 20px;
+      padding: 20px;
       background: rgba(13, 9, 22, .97);
       backdrop-filter: blur(14px);
     }
     .game-screen.active { display: block; animation: arrive .22s ease both; }
     @keyframes arrive { from { opacity: 0; } to { opacity: 1; } }
-    .game-wrap { width: min(720px, 100%); margin: 0 auto; }
+    .game-wrap { width: min(1180px, 100%); min-height: calc(100vh - 40px); margin: 0 auto; }
     .game-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid rgba(218, 198, 244, .15); }
     .back, .close { border: 0; background: transparent; cursor: pointer; }
     .back { padding: 8px 0; color: var(--muted); font-size: 12px; }
     .close { width: 38px; height: 38px; color: var(--muted); font-size: 24px; }
-    .game-content { padding: 52px 0 36px; }
-    .game-content h2 { margin: 12px 0 12px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(30px, 6vw, 48px); font-weight: 400; }
-    .lesson { max-width: 580px; color: var(--muted); font-size: 14px; line-height: 1.7; }
-    .task-box { margin-top: 30px; padding: 22px; border: 1px solid rgba(218, 198, 244, .18); border-left: 2px solid #c7a4ed; background: rgba(34, 24, 48, .72); }
-    .task-box h3 { margin: 0 0 8px; color: #e9d7fa; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
-    .task-box p { margin: 0; color: var(--ink); font-size: 14px; line-height: 1.6; }
-    .editor-label { display: block; margin: 25px 0 9px; color: var(--muted); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
-    textarea { width: 100%; min-height: 175px; resize: vertical; padding: 16px; border: 1px solid rgba(218, 198, 244, .2); border-radius: 3px; color: #efe5fb; background: #110d19; font-family: "SFMono-Regular", Consolas, monospace; font-size: 13px; line-height: 1.6; }
-    textarea:focus { border-color: #cda9f5; outline: none; }
-    .game-actions { display: flex; align-items: center; gap: 16px; margin-top: 15px; }
+    .game-content { padding: 24px 0 30px; }
+    .game-heading { margin-bottom: 18px; }
+    .game-heading h2 { margin: 8px 0 5px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(28px, 4vw, 38px); font-weight: 400; }
+    .lesson { margin-bottom: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .game-panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: stretch; }
+    .scene-panel, .editor-panel { min-width: 0; border: 1px solid rgba(218, 198, 244, .18); border-radius: 5px; background: rgba(26, 18, 39, .82); }
+    .scene-panel { display: flex; flex-direction: column; overflow: hidden; }
+    .scene-heading, .editor-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 16px; border-bottom: 1px solid rgba(218, 198, 244, .13); color: var(--muted); font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; }
+    .scene-heading span:last-child { color: var(--gold); font-size: 9px; }
+    .pixel-scene { position: relative; display: grid; min-height: 260px; flex: 1; place-items: end center; overflow: hidden; isolation: isolate; background-color: #1b1837; background-image: linear-gradient(rgba(24, 17, 43, .08), rgba(19, 13, 30, .35)), radial-gradient(ellipse at 50% 88%, rgba(81, 67, 135, .45), transparent 63%), repeating-linear-gradient(0deg, transparent 0 27px, rgba(203, 181, 238, .08) 28px 29px), repeating-linear-gradient(90deg, transparent 0 39px, rgba(203, 181, 238, .07) 40px 41px); }
+    .pixel-scene::before { position: absolute; inset: 0 0 auto; height: 56%; border-bottom: 4px solid rgba(197, 180, 232, .18); background: linear-gradient(90deg, transparent 9%, rgba(115, 208, 225, .11) 9% 10%, transparent 10% 28%, rgba(115, 208, 225, .08) 28% 46%, transparent 46% 70%, rgba(115, 208, 225, .1) 70% 71%, transparent 71%); content: ""; }
+    .pixel-scene::after { position: absolute; right: 0; bottom: 0; left: 0; height: 20%; border-top: 4px solid rgba(225, 202, 250, .18); background: repeating-linear-gradient(90deg, rgba(75, 58, 105, .8) 0 31px, rgba(56, 43, 83, .9) 32px 63px); content: ""; z-index: -1; }
+    .pixel-scene[data-scene="greenhouse"] { background-color: #17352e; background-image: linear-gradient(rgba(16, 40, 34, .08), rgba(16, 40, 34, .3)), repeating-linear-gradient(90deg, transparent 0 63px, rgba(149, 220, 161, .22) 64px 68px), repeating-linear-gradient(0deg, transparent 0 48px, rgba(149, 220, 161, .2) 49px 53px), radial-gradient(ellipse at 50% 90%, #38634c, transparent 62%); }
+    .pixel-scene[data-scene="laboratory"] { background-color: #21334b; background-image: linear-gradient(rgba(19, 35, 53, .12), rgba(19, 35, 53, .34)), repeating-linear-gradient(90deg, transparent 0 52px, rgba(157, 220, 237, .2) 53px 56px), repeating-linear-gradient(0deg, transparent 0 42px, rgba(157, 220, 237, .18) 43px 46px), radial-gradient(ellipse at 50% 85%, #42596f, transparent 60%); }
+    .pixel-scene[data-scene="mission-control"] { background-color: #142440; background-image: radial-gradient(circle at 76% 23%, #f4d37a 0 2px, transparent 3px), radial-gradient(circle at 83% 34%, #b4d9ff 0 2px, transparent 3px), radial-gradient(circle at 68% 42%, #d9c7ff 0 2px, transparent 3px), linear-gradient(90deg, transparent 8%, rgba(77, 189, 218, .2) 8% 9%, transparent 9% 28%, rgba(77, 189, 218, .14) 28% 53%, transparent 53%); }
+    .pixel-scene[data-scene="space-station"] { background-color: #161d3d; background-image: radial-gradient(circle at 15% 26%, #fff 0 1px, transparent 2px), radial-gradient(circle at 82% 16%, #f4d37a 0 2px, transparent 3px), radial-gradient(circle at 76% 42%, #fff 0 1px, transparent 2px), linear-gradient(90deg, transparent 8%, rgba(107, 150, 208, .18) 8% 9%, transparent 9% 28%, rgba(107, 150, 208, .15) 28% 56%, transparent 56%); }
+    .pixel-scene[data-scene="wind-tunnel"] { background-color: #243444; background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(190, 214, 229, .16) 40px 44px), repeating-linear-gradient(0deg, transparent 0 54px, rgba(190, 214, 229, .13) 55px 59px), radial-gradient(ellipse at 50% 80%, #637381, transparent 60%); }
+    .pixel-meadow { position: absolute; inset: 0; z-index: 0; display: none; width: 100%; height: 100%; shape-rendering: crispEdges; }
+    .pixel-scene[data-scene="meadow"] { min-height: 360px; background: #83cdeb; }
+    .pixel-scene[data-scene="meadow"]::before, .pixel-scene[data-scene="meadow"]::after { display: none; }
+    .pixel-scene[data-scene="meadow"] .pixel-meadow { display: block; }
+    .pixel-scene[data-scene="meadow"] .pixel-window { display: none; }
+    .pixel-scene[data-scene="meadow"] .pixel-room-label { padding: 5px 7px; color: #244735; background: rgba(245, 249, 220, .78); }
+    .pixel-scene[data-scene="meadow"] { min-height: 360px; }
+    .pixel-character { position: relative; z-index: 1; width: 144px; height: 144px; margin-bottom: 0; image-rendering: pixelated; filter: drop-shadow(0 4px 0 rgba(15, 10, 25, .42)); }
+    .pixel-character.planting-walk { position: absolute; bottom: 0; left: var(--plant-x, 50%); margin: 0; transform: translateX(-50%); transition: left .22s steps(4, end); }
+    .pixel-character.planting { animation: chibi-plant .22s steps(2, end) infinite alternate; }
+    @keyframes chibi-plant { to { translate: 0 -4px; } }
+    .planted-tree .tree-growth { opacity: 0; transform-box: fill-box; transform-origin: center bottom; transform: scaleY(0); }
+    .planted-tree.grown .tree-growth { animation: sapling-grow .38s steps(5, end) forwards; }
+    @keyframes sapling-grow { to { opacity: 1; transform: scaleY(1); } }
+    @media (max-width: 700px) {
+      .pixel-scene[data-scene="meadow"] { min-height: 320px; }
+      .pixel-character { width: 120px; height: 120px; }
+    }
+    .pixel-room-label { position: absolute; top: 14px; left: 16px; z-index: 1; color: rgba(245, 239, 255, .72); font-size: 9px; letter-spacing: 1.3px; text-transform: uppercase; }
+    .pixel-window { position: absolute; top: 40px; left: 50%; width: min(58%, 260px); height: 76px; border: 4px solid rgba(206, 196, 235, .38); background: linear-gradient(180deg, rgba(89, 126, 185, .22), rgba(115, 190, 180, .12)); box-shadow: inset 0 0 0 3px rgba(29, 24, 50, .65); transform: translateX(-50%); }
+    .pixel-window::before, .pixel-window::after { position: absolute; background: rgba(206, 196, 235, .3); content: ""; }
+    .pixel-window::before { top: 0; bottom: 0; left: 50%; width: 3px; }
+    .pixel-window::after { top: 50%; right: 0; left: 0; height: 3px; }
+    .pixel-sprite { width: 100%; height: 100%; shape-rendering: crispEdges; }
+    .task-box { margin-bottom: 13px; padding: 15px; border: 1px solid rgba(218, 198, 244, .16); border-left: 2px solid #c7a4ed; background: rgba(34, 24, 48, .72); }
+    .task-box h3 { margin: 0 0 7px; color: #e9d7fa; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; }
+    .task-box p { margin: 0; color: var(--ink); font-size: 12px; line-height: 1.55; }
+    .first-loop-example { margin: 12px 0 0; padding: 10px; border: 1px solid rgba(218, 198, 244, .14); color: #c8b9dc; background: rgba(12, 9, 19, .48); font: 11px/1.55 "SFMono-Regular", Consolas, monospace; white-space: pre-wrap; }
+    .editor-panel { display: flex; flex-direction: column; }
+    .editor-heading { margin-bottom: 0; }
+    .editor-heading .editor-label { margin: 0; color: inherit; font-size: inherit; letter-spacing: inherit; }
+    .editor-control { display: flex; min-height: 252px; flex: 1; overflow: hidden; border-bottom: 1px solid rgba(218, 198, 244, .13); background: #110d19; }
+    .line-numbers { width: 42px; flex: 0 0 42px; margin: 0; padding: 15px 10px 15px 0; overflow: hidden; color: #746985; background: rgba(255, 255, 255, .025); text-align: right; font: 13px/1.65 "SFMono-Regular", Consolas, monospace; user-select: none; }
+    textarea { display: block; width: 100%; min-width: 0; min-height: 252px; flex: 1; resize: vertical; padding: 15px; border: 0; border-radius: 0; color: #efe5fb; background: transparent; font: 13px/1.65 "SFMono-Regular", Consolas, monospace; tab-size: 4; }
+    textarea::placeholder { color: rgba(239, 229, 251, .42); opacity: 1; }
+    textarea:focus { outline: none; }
+    .editor-control:focus-within { box-shadow: inset 0 0 0 1px #cda9f5; }
+    .game-actions { display: flex; align-items: center; gap: 14px; padding: 14px 16px; }
     .action { padding: 11px 17px; border: 1px solid #d1b1f1; border-radius: 2px; color: #180e22; background: #dfc1fb; cursor: pointer; font-size: 12px; font-weight: 700; }
     .action:hover { background: #efddff; }
-    .feedback { min-height: 20px; color: var(--muted); font-size: 12px; }
+    .feedback { min-height: 20px; margin: 0; color: var(--muted); font-size: 11px; }
     .feedback.success { color: var(--gold); }
 
     @media (max-width: 700px) {
@@ -314,6 +364,14 @@
       .map-scroll { flex-basis: 550px; margin-top: auto; }
       .checkpoint-label { font-size: 15px; }
       .preview { top: 94px; width: min(240px, 78vw); }
+      .game-screen { padding: 12px; }
+      .game-wrap { min-height: calc(100vh - 24px); }
+      .game-top { padding-bottom: 12px; }
+      .game-content { padding-top: 18px; }
+      .game-panels { grid-template-columns: 1fr; }
+      .pixel-scene { min-height: 210px; }
+      .editor-control { min-height: 210px; }
+      textarea { min-height: 210px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -419,13 +477,213 @@
         <button class="close" id="close-button" type="button" aria-label="Close checkpoint">×</button>
       </div>
       <div class="game-content">
-        <div class="eyebrow" id="game-concept"></div>
-        <h2 id="game-title"></h2>
-        <p class="lesson" id="game-lesson"></p>
-        <div class="task-box"><h3>Your mission</h3><p id="game-task"></p></div>
-        <label class="editor-label" for="code-answer">Your code</label>
-        <textarea id="code-answer" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
-        <div class="game-actions"><button class="action" id="check-button" type="button">Check code</button><div class="feedback" id="feedback" role="status" aria-live="polite"></div></div>
+        <div class="game-heading">
+          <div class="eyebrow" id="game-concept"></div>
+          <h2 id="game-title"></h2>
+          <p class="lesson" id="game-lesson"></p>
+        </div>
+        <div class="game-panels">
+          <section class="scene-panel" aria-label="Guide's workspace">
+            <div class="scene-heading"><span id="scene-guide"></span><span>Playground</span></div>
+            <div class="pixel-scene" id="pixel-scene" data-scene="space-station">
+              <span class="pixel-room-label" id="pixel-room-label"></span>
+              <div class="pixel-window" aria-hidden="true"></div>
+              <svg class="pixel-meadow" viewBox="0 0 320 180" preserveAspectRatio="none" aria-hidden="true">
+                <rect width="320" height="180" fill="#8dd6f2"/>
+                <rect y="0" width="320" height="22" fill="#a8e1f4"/>
+                <rect y="22" width="320" height="12" fill="#9bdbf2"/>
+                <rect x="242" y="19" width="25" height="6" fill="#f6df83"/>
+                <rect x="237" y="24" width="35" height="24" fill="#f6df83"/>
+                <rect x="242" y="47" width="25" height="6" fill="#f6df83"/>
+                <rect x="230" y="30" width="7" height="12" fill="#f6df83"/>
+                <rect x="272" y="30" width="7" height="12" fill="#f6df83"/>
+                <rect x="248" y="11" width="12" height="7" fill="#f6df83"/>
+                <rect x="248" y="54" width="12" height="7" fill="#f6df83"/>
+                <rect x="236" y="17" width="4" height="6" fill="#f1c85c"/>
+                <rect x="270" y="45" width="5" height="7" fill="#f1c85c"/>
+                <rect x="257" y="25" width="8" height="20" fill="#ffe99c"/>
+                <rect x="241" y="31" width="28" height="10" fill="#ffe99c"/>
+                <rect x="27" y="29" width="30" height="8" fill="#f6fbf2"/>
+                <rect x="19" y="37" width="49" height="13" fill="#f6fbf2"/>
+                <rect x="34" y="50" width="24" height="6" fill="#f6fbf2"/>
+                <rect x="31" y="24" width="19" height="5" fill="#ffffff"/>
+                <rect x="23" y="33" width="8" height="4" fill="#dcecf0"/>
+                <rect x="57" y="40" width="13" height="5" fill="#dcecf0"/>
+                <rect x="110" y="20" width="21" height="7" fill="#f6fbf2"/>
+                <rect x="102" y="27" width="38" height="12" fill="#f6fbf2"/>
+                <rect x="114" y="39" width="22" height="6" fill="#f6fbf2"/>
+                <rect x="113" y="15" width="15" height="5" fill="#ffffff"/>
+                <rect x="136" y="30" width="8" height="5" fill="#dcecf0"/>
+                <rect x="106" y="35" width="7" height="5" fill="#dcecf0"/>
+                <rect x="157" y="51" width="5" height="3" fill="#ffffff"/>
+                <rect x="165" y="46" width="4" height="3" fill="#ffffff"/>
+                <rect x="172" y="51" width="5" height="3" fill="#ffffff"/>
+                <rect y="77" width="320" height="17" fill="#78bd76"/>
+                <rect y="88" width="320" height="18" fill="#63ac67"/>
+                <path d="M0 91h24v-7h18v-8h31v8h19v12h20v-6h29v10H0Zm196 4h22V83h18v-8h24v9h19v12h41v11H196Z" fill="#72b66d"/>
+                <path d="M0 99h18v-5h25v4h22v-7h16v9h24v-5h31v8H0Zm184 4h20v-8h28v5h18v-9h20v8h20v-6h30v11H184Z" fill="#579f61"/>
+                <rect x="7" y="86" width="4" height="5" fill="#94ce72"/>
+                <rect x="14" y="82" width="5" height="4" fill="#a2d77b"/>
+                <rect x="78" y="87" width="6" height="4" fill="#8dca70"/>
+                <rect x="92" y="92" width="5" height="4" fill="#a2d77b"/>
+                <rect x="216" y="87" width="6" height="4" fill="#94ce72"/>
+                <rect x="253" y="82" width="6" height="5" fill="#a2d77b"/>
+                <rect x="307" y="90" width="5" height="5" fill="#94ce72"/>
+                <rect y="103" width="320" height="77" fill="#4c9b55"/>
+                <rect y="105" width="320" height="4" fill="#75bb62"/>
+                <rect y="112" width="320" height="10" fill="#58a85b"/>
+                <rect y="121" width="320" height="5" fill="#4d9952"/>
+                <rect y="134" width="320" height="6" fill="#438e4d"/>
+                <rect y="143" width="320" height="8" fill="#438d4d"/>
+                <rect y="152" width="320" height="5" fill="#397f49"/>
+                <rect x="0" y="126" width="31" height="4" fill="#64ad57"/>
+                <rect x="38" y="129" width="20" height="4" fill="#66ad59"/>
+                <rect x="63" y="124" width="30" height="5" fill="#5ba553"/>
+                <rect x="223" y="128" width="26" height="4" fill="#65ad57"/>
+                <rect x="262" y="124" width="23" height="5" fill="#5ca353"/>
+                <rect x="297" y="130" width="23" height="4" fill="#69b05a"/>
+                <rect x="20" y="76" width="11" height="28" fill="#765339"/>
+                <rect x="11" y="67" width="29" height="13" fill="#398653"/>
+                <rect x="4" y="73" width="17" height="12" fill="#4a9854"/>
+                <rect x="28" y="61" width="18" height="13" fill="#4a9854"/>
+                <rect x="0" y="69" width="9" height="12" fill="#30914f"/>
+                <rect x="40" y="66" width="10" height="9" fill="#34a15a"/>
+                <rect x="7" y="61" width="14" height="8" fill="#3ca45b"/>
+                <rect x="20" y="57" width="13" height="9" fill="#48aa5e"/>
+                <rect x="35" y="58" width="11" height="8" fill="#329754"/>
+                <rect x="286" y="72" width="10" height="32" fill="#765339"/>
+                <rect x="275" y="62" width="32" height="17" fill="#398653"/>
+                <rect x="267" y="70" width="20" height="14" fill="#4a9854"/>
+                <rect x="296" y="57" width="21" height="15" fill="#4a9854"/>
+                <rect x="284" y="54" width="13" height="9" fill="#3ca45b"/>
+                <rect x="306" y="65" width="14" height="11" fill="#329754"/>
+                <rect x="272" y="59" width="12" height="8" fill="#48aa5e"/>
+                <path d="M0 155h34v-8h20v8h28v-8h18v8h30v-9h20v9h27v-8h20v8h28v-9h19v9h28v-8h19v8h21v25H0Z" fill="#357d47"/>
+                <rect y="160" width="320" height="5" fill="#2d7442"/>
+                <rect y="173" width="320" height="7" fill="#286b3d"/>
+                <rect x="14" y="161" width="24" height="4" fill="#438d47"/>
+                <rect x="63" y="169" width="33" height="4" fill="#438d47"/>
+                <rect x="113" y="160" width="23" height="4" fill="#438d47"/>
+                <rect x="182" y="168" width="36" height="5" fill="#438d47"/>
+                <rect x="251" y="161" width="34" height="4" fill="#438d47"/>
+                <rect x="49" y="120" width="3" height="17" fill="#2d7441"/>
+                <rect x="44" y="118" width="5" height="4" fill="#8bc75e"/>
+                <rect x="52" y="115" width="5" height="5" fill="#76ba55"/>
+                <rect x="45" y="112" width="4" height="5" fill="#f4cf65"/>
+                <rect x="47" y="126" width="6" height="3" fill="#72b94e"/>
+                <rect x="270" y="121" width="3" height="18" fill="#2d7441"/>
+                <rect x="264" y="117" width="6" height="4" fill="#83c45c"/>
+                <rect x="273" y="114" width="5" height="5" fill="#69ad4c"/>
+                <rect x="270" y="125" width="7" height="3" fill="#78bb50"/>
+                <rect x="88" y="163" width="5" height="4" fill="#f5df77"/>
+                <rect x="93" y="159" width="5" height="4" fill="#fff0ad"/>
+                <rect x="98" y="163" width="5" height="4" fill="#f5df77"/>
+                <rect x="95" y="167" width="4" height="4" fill="#9c6547"/>
+                <rect x="224" y="151" width="5" height="4" fill="#f4dce9"/>
+                <rect x="229" y="147" width="5" height="4" fill="#fff0ad"/>
+                <rect x="234" y="151" width="5" height="4" fill="#f4dce9"/>
+                <rect x="230" y="155" width="4" height="5" fill="#9c6547"/>
+                <rect x="136" y="169" width="4" height="3" fill="#d4e876"/>
+                <rect x="181" y="158" width="4" height="3" fill="#d4e876"/>
+                <rect x="155" y="147" width="3" height="3" fill="#fff0ad"/>
+                <rect x="22" y="145" width="3" height="9" fill="#2f7b42"/>
+                <rect x="17" y="141" width="6" height="4" fill="#8dce5e"/>
+                <rect x="24" y="138" width="6" height="5" fill="#64b654"/>
+                <rect x="29" y="143" width="5" height="4" fill="#4ca94d"/>
+                <rect x="298" y="149" width="3" height="10" fill="#2f7b42"/>
+                <rect x="291" y="145" width="7" height="4" fill="#8dce5e"/>
+                <rect x="300" y="141" width="7" height="5" fill="#64b654"/>
+                <rect x="307" y="147" width="5" height="4" fill="#4ca94d"/>
+                <rect x="74" y="153" width="5" height="4" fill="#f2ca64"/>
+                <rect x="79" y="149" width="5" height="4" fill="#fff0ad"/>
+                <rect x="84" y="153" width="5" height="4" fill="#f2ca64"/>
+                <rect x="126" y="157" width="5" height="4" fill="#f2ca64"/>
+                <rect x="131" y="153" width="5" height="4" fill="#fff0ad"/>
+                <rect x="136" y="157" width="5" height="4" fill="#f2ca64"/>
+                <rect x="204" y="139" width="3" height="9" fill="#2f7b42"/>
+                <rect x="199" y="135" width="6" height="4" fill="#8dce5e"/>
+                <rect x="206" y="132" width="6" height="5" fill="#64b654"/>
+                <rect x="212" y="137" width="5" height="4" fill="#4ca94d"/>
+                <rect x="4" y="71" width="14" height="6" fill="#2c884b"/>
+                <rect x="22" y="64" width="14" height="5" fill="#54ad61"/>
+                <rect x="284" y="66" width="18" height="6" fill="#2c884b"/>
+                <rect x="293" y="61" width="16" height="5" fill="#54ad61"/>
+                <rect x="0" y="75" width="5" height="7" fill="#57ad61"/>
+                <rect x="45" y="72" width="6" height="6" fill="#57ad61"/>
+                <rect x="267" y="76" width="7" height="6" fill="#57ad61"/>
+                <rect x="314" y="70" width="6" height="8" fill="#57ad61"/>
+                <rect x="12" y="105" width="22" height="3" fill="#80c66a"/>
+                <rect x="41" y="108" width="15" height="3" fill="#79bd62"/>
+                <rect x="69" y="104" width="25" height="3" fill="#80c66a"/>
+                <rect x="223" y="106" width="20" height="3" fill="#80c66a"/>
+                <rect x="257" y="110" width="18" height="3" fill="#79bd62"/>
+                <rect x="289" y="104" width="24" height="3" fill="#80c66a"/>
+                <rect x="11" y="116" width="4" height="4" fill="#8acb68"/>
+                <rect x="28" y="123" width="3" height="4" fill="#337f45"/>
+                <rect x="100" y="114" width="5" height="3" fill="#8acb68"/>
+                <rect x="119" y="126" width="4" height="3" fill="#347f45"/>
+                <rect x="217" y="118" width="5" height="4" fill="#8acb68"/>
+                <rect x="246" y="121" width="4" height="3" fill="#347f45"/>
+                <rect x="279" y="113" width="5" height="4" fill="#8acb68"/>
+                <rect x="304" y="125" width="4" height="3" fill="#347f45"/>
+                <rect x="35" y="149" width="11" height="4" fill="#408c47"/>
+                <rect x="57" y="158" width="13" height="4" fill="#4b974b"/>
+                <rect x="103" y="151" width="12" height="4" fill="#438d47"/>
+                <rect x="146" y="164" width="14" height="4" fill="#4b974b"/>
+                <rect x="164" y="151" width="13" height="4" fill="#438d47"/>
+                <rect x="221" y="158" width="12" height="4" fill="#4b974b"/>
+                <rect x="277" y="151" width="14" height="4" fill="#438d47"/>
+                <rect x="14" y="136" width="3" height="8" fill="#287440"/>
+                <rect x="9" y="132" width="6" height="5" fill="#70bb50"/>
+                <rect x="16" y="129" width="6" height="5" fill="#8dcc5b"/>
+                <rect x="22" y="134" width="5" height="4" fill="#4fa34b"/>
+                <rect x="56" y="137" width="3" height="9" fill="#287440"/>
+                <rect x="51" y="133" width="6" height="5" fill="#70bb50"/>
+                <rect x="58" y="130" width="6" height="5" fill="#8dcc5b"/>
+                <rect x="64" y="135" width="5" height="4" fill="#4fa34b"/>
+                <rect x="244" y="135" width="3" height="9" fill="#287440"/>
+                <rect x="239" y="131" width="6" height="5" fill="#70bb50"/>
+                <rect x="246" y="128" width="6" height="5" fill="#8dcc5b"/>
+                <rect x="252" y="133" width="5" height="4" fill="#4fa34b"/>
+                <rect x="85" y="123" width="4" height="9" fill="#397d43"/>
+                <rect x="81" y="120" width="5" height="4" fill="#5fae4e"/>
+                <rect x="87" y="117" width="6" height="5" fill="#77c158"/>
+                <rect x="93" y="122" width="5" height="4" fill="#519d49"/>
+                <rect x="174" y="129" width="4" height="9" fill="#397d43"/>
+                <rect x="170" y="126" width="5" height="4" fill="#5fae4e"/>
+                <rect x="176" y="123" width="6" height="5" fill="#77c158"/>
+                <rect x="182" y="128" width="5" height="4" fill="#519d49"/>
+                <rect x="119" y="141" width="2" height="6" fill="#e6cf67"/>
+                <rect x="116" y="138" width="3" height="3" fill="#fff1aa"/>
+                <rect x="121" y="137" width="3" height="3" fill="#fff1aa"/>
+                <rect x="122" y="141" width="3" height="3" fill="#e6cf67"/>
+                <rect x="192" y="146" width="2" height="7" fill="#e6cf67"/>
+                <rect x="189" y="143" width="3" height="3" fill="#fff1aa"/>
+                <rect x="194" y="142" width="3" height="3" fill="#fff1aa"/>
+                <rect x="195" y="146" width="3" height="3" fill="#e6cf67"/>
+                <rect x="66" y="144" width="2" height="6" fill="#e6cf67"/>
+                <rect x="63" y="141" width="3" height="3" fill="#fff1aa"/>
+                <rect x="68" y="140" width="3" height="3" fill="#fff1aa"/>
+                <rect x="69" y="144" width="3" height="3" fill="#e6cf67"/>
+                <rect x="282" y="136" width="2" height="6" fill="#e6cf67"/>
+                <rect x="279" y="133" width="3" height="3" fill="#fff1aa"/>
+                <rect x="284" y="132" width="3" height="3" fill="#fff1aa"/>
+                <rect x="285" y="136" width="3" height="3" fill="#e6cf67"/>
+                <g id="planted-trees"></g>
+              </svg>
+              <svg class="pixel-character" id="pixel-character" viewBox="0 0 64 64" role="img" aria-label=""></svg>
+            </div>
+          </section>
+          <section class="editor-panel" aria-label="Code editor">
+            <div class="editor-heading"><label class="editor-label" for="code-answer">Your code</label><span>Python</span></div>
+            <div class="task-box"><h3>Your mission</h3><p id="game-task"></p><pre class="first-loop-example" id="first-loop-example" hidden></pre></div>
+            <div class="editor-control">
+              <pre class="line-numbers" id="line-numbers" aria-hidden="true">1</pre>
+              <textarea id="code-answer" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Enter your Python code"></textarea>
+            </div>
+            <div class="game-actions"><button class="action" id="check-button" type="button">Check code</button><p class="feedback" id="feedback" role="status" aria-live="polite"></p></div>
+          </section>
+        </div>
       </div>
     </div>
   </section>
@@ -544,6 +802,28 @@
       dictionaries: { name: "Mary Jackson", field: "NASA engineer", image: "mary-jackson.jpg" },
       classes: { name: "Marie Curie", field: "Physicist and chemist", image: "marie-curie.jpg" }
     };
+    const guideScenes = {
+      print: { name: "Sally Ride", environment: "Space shuttle flight deck", scene: "space-station", hair: "#3d2b2b", skin: "#d9b5a0", outfit: "#3978d4" },
+      variables: { name: "Katherine Johnson", environment: "NASA flight calculations", scene: "mission-control", hair: "#211b20", skin: "#87523d", outfit: "#40577c" },
+      strings: { name: "Lise Meitner", environment: "Physics laboratory", scene: "laboratory", hair: "#b58b5d", skin: "#e1b99e", outfit: "#476b59" },
+      "for-loops": { name: "Wangari Maathai", environment: "Green Belt Movement nursery", scene: "meadow", hair: "#241b1b", skin: "#8b543d", outfit: "#087783" },
+      "while-loops": { name: "Annie Easley", environment: "Rocket propulsion lab", scene: "laboratory", hair: "#211a1b", skin: "#89513d", outfit: "#375f75" },
+      "if-statements": { name: "Grace Hopper", environment: "Computer programming room", scene: "mission-control", hair: "#d2c5a9", skin: "#e6c4ad", outfit: "#3e527d" },
+      functions: { name: "Dorothy Vaughan", environment: "NASA computing center", scene: "mission-control", hair: "#211a1c", skin: "#87523d", outfit: "#4a6685" },
+      dictionaries: { name: "Mary Jackson", environment: "NASA wind tunnel", scene: "wind-tunnel", hair: "#211b1b", skin: "#87523d", outfit: "#3e6680" },
+      classes: { name: "Marie Curie", environment: "Radioactivity laboratory", scene: "laboratory", hair: "#57463c", skin: "#e1b99e", outfit: "#52647a" }
+    };
+    const pixelGuideStyles = {
+      print: { hair: "#38252a", skin: "#e5bda5", clothes: "#315f9b" },
+      variables: { hair: "#21191b", skin: "#87523d", clothes: "#426b94" },
+      strings: { hair: "#514234", skin: "#e1b99e", clothes: "#67816c" },
+      "for-loops": { hair: "#21191b", skin: "#8b543d", clothes: "#087783" },
+      "while-loops": { hair: "#30252c", skin: "#89513d", clothes: "#3c6c83" },
+      "if-statements": { hair: "#4a463e", skin: "#e6c4ad", clothes: "#40587b" },
+      functions: { hair: "#292027", skin: "#87523d", clothes: "#587591" },
+      dictionaries: { hair: "#392727", skin: "#87523d", clothes: "#3e718d" },
+      classes: { hair: "#59483d", skin: "#e1b99e", clothes: "#596c78" }
+    };
     const rocketIllustration = `<path class="rocket-guide" d="M50 8C43 15 38 26 38 39V50L30 60 40 57 43 65 50 61 57 65 60 57 70 60 62 50V39C62 26 57 15 50 8Z"/><path class="rocket-guide" d="M50 29A5 5 0 1 1 50 39A5 5 0 1 1 50 29Z"/><path class="rocket-guide" d="M46 63C45 67 46 71 48 74M50 62V76M54 63C55 67 54 71 52 74"/>`;
     const sallyPortrait = `<div class="preview-art"><span class="preview-tag">NASA photo · Sally Ride</span><img class="portrait portrait-photo" src="assets/sally-ride-portrait.jpg" alt="Sally Ride smiling in her NASA flight suit"></div>`;
 
@@ -557,6 +837,12 @@
       let stillTimer;
 
       document.addEventListener("mousemove", event => {
+        if (document.body.classList.contains("workspace-active")) {
+          astronautCursor.classList.add("is-hidden");
+          astronautCursor.classList.remove("is-moving");
+          window.clearTimeout(stillTimer);
+          return;
+        }
         const target = event.target instanceof Element ? event.target : null;
         const isTextEntry = target?.closest("textarea, input, [contenteditable='true']");
         astronautCursor.classList.toggle("is-hidden", Boolean(isTextEntry));
@@ -590,9 +876,192 @@
     const checkpoints = [...document.querySelectorAll(".checkpoint")];
     const gameScreen = document.getElementById("game-screen");
     const codeAnswer = document.getElementById("code-answer");
+    const lineNumbers = document.getElementById("line-numbers");
     const feedback = document.getElementById("feedback");
+    const pixelCharacter = document.getElementById("pixel-character");
+    const plantedTrees = document.getElementById("planted-trees");
+    const firstLoopExample = document.getElementById("first-loop-example");
+    const gameTask = document.getElementById("game-task");
     let activeId = null;
     let completed = new Set(["print", "variables", "strings"]);
+    let forLoopStage = 1;
+    let firstLoopCode = "";
+    let planting = false;
+
+    function renderPixelGuide(id) {
+      const style = pixelGuideStyles[id];
+      const wangariFace = id === "for-loops"
+        ? `
+          <rect x="19" y="21" width="29" height="18" fill="#20212b"/>
+          <rect x="21" y="22" width="25" height="15" fill="${style.skin}"/>
+          <rect x="47" y="26" width="5" height="8" fill="#20212b"/>
+          <rect x="48" y="28" width="3" height="4" fill="${style.skin}"/>
+          <rect x="16" y="25" width="6" height="12" fill="${style.hair}"/>
+          <rect x="39" y="27" width="7" height="8" fill="#20212b"/>
+          <rect x="40" y="28" width="4" height="5" fill="#f5f4ed"/>
+          <rect x="42" y="29" width="2" height="3" fill="#20212b"/>
+          <rect x="46" y="34" width="4" height="3" fill="#20212b"/>
+          <rect x="47" y="35" width="2" height="1" fill="#f5d1bd"/>
+        `
+        : `
+          <rect x="17" y="20" width="34" height="20" fill="#20212b"/>
+          <rect x="20" y="22" width="28" height="15" fill="${style.skin}"/>
+          <rect x="15" y="26" width="6" height="11" fill="#20212b"/>
+          <rect x="16" y="28" width="4" height="7" fill="${style.skin}"/>
+          <rect x="47" y="26" width="6" height="11" fill="#20212b"/>
+          <rect x="48" y="28" width="4" height="7" fill="${style.skin}"/>
+          <rect x="21" y="27" width="8" height="9" fill="#20212b"/>
+          <rect x="22" y="28" width="6" height="6" fill="#f5f4ed"/>
+          <rect x="24" y="29" width="3" height="4" fill="#20212b"/>
+          <rect x="38" y="27" width="8" height="9" fill="#20212b"/>
+          <rect x="39" y="28" width="6" height="6" fill="#f5f4ed"/>
+          <rect x="41" y="29" width="3" height="4" fill="#20212b"/>
+          <rect x="32" y="32" width="4" height="5" fill="#20212b"/>
+          <rect x="33" y="33" width="2" height="2" fill="${style.skin}"/>
+          <rect x="29" y="37" width="10" height="3" fill="#20212b"/>
+          <rect x="31" y="37" width="6" height="1" fill="#f5d1bd"/>
+        `;
+      return `
+        <rect x="17" y="61" width="14" height="3" fill="#20212b"/>
+        <rect x="33" y="61" width="14" height="3" fill="#20212b"/>
+        <rect x="19" y="58" width="12" height="4" fill="#30323b"/>
+        <rect x="35" y="58" width="12" height="4" fill="#30323b"/>
+
+        <rect x="19" y="54" width="12" height="7" fill="#20212b"/>
+        <rect x="33" y="54" width="12" height="7" fill="#20212b"/>
+        <rect x="21" y="55" width="8" height="4" fill="${style.clothes}"/>
+        <rect x="35" y="55" width="8" height="4" fill="${style.clothes}"/>
+
+        <rect x="14" y="39" width="38" height="17" fill="#20212b"/>
+        <rect x="11" y="42" width="44" height="12" fill="#20212b"/>
+        <rect x="16" y="41" width="34" height="13" fill="${style.clothes}"/>
+        <rect x="13" y="44" width="5" height="8" fill="${style.clothes}"/>
+        <rect x="49" y="44" width="5" height="8" fill="${style.clothes}"/>
+        <rect x="17" y="40" width="32" height="2" fill="#59606a"/>
+        <rect x="18" y="45" width="30" height="2" fill="#20212b"/>
+        <rect x="20" y="45" width="26" height="1" fill="${style.clothes}"/>
+        <rect x="19" y="51" width="28" height="3" fill="#20212b"/>
+        <rect x="21" y="52" width="24" height="1" fill="${style.clothes}"/>
+        <rect x="8" y="43" width="8" height="9" fill="#20212b"/>
+        <rect x="52" y="43" width="8" height="9" fill="#20212b"/>
+        <rect x="10" y="45" width="5" height="5" fill="${style.skin}"/>
+        <rect x="53" y="45" width="5" height="5" fill="${style.skin}"/>
+
+        <rect x="25" y="36" width="16" height="7" fill="#20212b"/>
+        <rect x="28" y="37" width="10" height="5" fill="${style.skin}"/>
+
+        <rect x="15" y="17" width="37" height="24" fill="#20212b"/>
+        <rect x="12" y="22" width="43" height="17" fill="#20212b"/>
+        <rect x="17" y="19" width="33" height="19" fill="${style.hair}"/>
+        <rect x="14" y="24" width="6" height="13" fill="${style.hair}"/>
+        <rect x="48" y="24" width="6" height="13" fill="${style.hair}"/>
+        ${wangariFace}
+
+        <rect x="19" y="10" width="31" height="9" fill="#20212b"/>
+        <rect x="14" y="13" width="42" height="9" fill="#20212b"/>
+        <rect x="20" y="12" width="29" height="5" fill="${style.clothes}"/>
+        <rect x="16" y="15" width="38" height="5" fill="${style.clothes}"/>
+        <rect x="11" y="19" width="49" height="7" fill="#20212b"/>
+        <rect x="13" y="20" width="45" height="4" fill="${style.clothes}"/>
+        <rect x="17" y="15" width="5" height="4" fill="${style.hair}"/>
+        <rect x="46" y="15" width="5" height="4" fill="${style.hair}"/>
+      `;
+    }
+
+    function updateCodePreview() {
+      const code = codeAnswer.value;
+      const lineCount = code.split("\n").length;
+      lineNumbers.textContent = Array.from({ length: lineCount }, (_, index) => index + 1).join("\n");
+      lineNumbers.scrollTop = codeAnswer.scrollTop;
+    }
+
+    function getLoopIterationCount(code) {
+      const loop = code.match(/\bfor\s+\w+\s+in\s+range\s*\(([^)]*)\)\s*:\s*\n[ \t]+print\s*\(/);
+      if (!loop) return { error: "Put print(...) inside your for loop." };
+
+      const args = loop[1].split(",").map(argument => argument.trim());
+      if (args.length < 1 || args.length > 3 || args.some(argument => !/^[+-]?\d+$/.test(argument))) {
+        return { error: "Use whole numbers in range(), like range(3)." };
+      }
+
+      const values = args.map(argument => BigInt(argument));
+      const start = values.length === 1 ? 0n : values[0];
+      const stop = values.length === 1 ? values[0] : values[1];
+      const step = values.length === 3 ? values[2] : 1n;
+      if (step === 0n) return { error: "The step in range() cannot be zero." };
+
+      let count = 0n;
+      if (step > 0n && start < stop) count = (stop - start + step - 1n) / step;
+      if (step < 0n && start > stop) count = (start - stop - step - 1n) / -step;
+      if (count === 0n) return { error: "Make your loop plant at least one tree." };
+      if (count > 10n) return { error: "For this playground, plant no more than 10 trees at a time." };
+      return { count: Number(count) };
+    }
+
+    function createPlantedTree(x, y, scale) {
+      const tree = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      tree.setAttribute("class", "planted-tree");
+      tree.setAttribute("transform", `translate(${x} ${y}) scale(${scale})`);
+      tree.innerHTML = `
+        <rect class="tree-seed" x="-8" y="-4" width="16" height="5" fill="#2d683f"/>
+        <rect class="tree-seed" x="-5" y="-6" width="10" height="3" fill="#e6c36a"/>
+        <g class="tree-growth">
+          <rect x="-4" y="-32" width="8" height="32" fill="#202b27"/>
+          <rect x="-2" y="-30" width="4" height="30" fill="#a85f2d"/>
+          <rect x="-1" y="-28" width="2" height="25" fill="#e3a149"/>
+          <rect x="-7" y="-60" width="14" height="8" fill="#202b27"/>
+          <rect x="-13" y="-55" width="26" height="10" fill="#202b27"/>
+          <rect x="-17" y="-48" width="34" height="17" fill="#202b27"/>
+          <rect x="-13" y="-35" width="26" height="8" fill="#202b27"/>
+          <rect x="-5" y="-58" width="10" height="5" fill="#a9e34b"/>
+          <rect x="-10" y="-53" width="20" height="6" fill="#80d33f"/>
+          <rect x="-14" y="-46" width="28" height="12" fill="#23a94e"/>
+          <rect x="-10" y="-34" width="20" height="5" fill="#087846"/>
+          <rect x="-12" y="-43" width="8" height="5" fill="#b5ed54"/>
+          <rect x="3" y="-50" width="8" height="5" fill="#63cb42"/>
+          <rect x="7" y="-40" width="6" height="5" fill="#e4c64e"/>
+          <rect x="-9" y="-30" width="3" height="3" fill="#efcc69"/>
+        </g>`;
+      return tree;
+    }
+
+    function wait(milliseconds) {
+      return new Promise(resolve => window.setTimeout(resolve, milliseconds));
+    }
+
+    async function animateTreePlanting(count, stage) {
+      if (stage === 1) plantedTrees.replaceChildren();
+      pixelCharacter.classList.add("planting-walk");
+      pixelCharacter.classList.add("planting");
+      const firstTreeX = stage === 2 ? 22 : count === 1 ? 160 : 36;
+      const spacing = count === 1 ? 0 : (stage === 2 ? 276 : 248) / (count - 1);
+      const rowY = stage === 2 ? 170 : 132;
+      const treeScale = stage === 2 ? 0.88 : 0.58;
+
+      for (let index = 0; index < count; index += 1) {
+        const treeX = firstTreeX + spacing * index;
+        const characterX = 14 + treeX / 320 * 72;
+        pixelCharacter.style.setProperty("--plant-x", `${characterX}%`);
+        const tree = createPlantedTree(treeX, rowY, treeScale);
+        plantedTrees.append(tree);
+        await wait(260);
+        tree.classList.add("grown");
+        await wait(420);
+      }
+
+      pixelCharacter.classList.remove("planting");
+    }
+
+    codeAnswer.addEventListener("input", updateCodePreview);
+    codeAnswer.addEventListener("scroll", () => { lineNumbers.scrollTop = codeAnswer.scrollTop; });
+    codeAnswer.addEventListener("keydown", event => {
+      if (event.key !== "Tab") return;
+      event.preventDefault();
+      const start = codeAnswer.selectionStart;
+      const end = codeAnswer.selectionEnd;
+      codeAnswer.setRangeText("    ", start, end, "end");
+      updateCodePreview();
+    });
 
     for (const checkpoint of checkpoints) {
       const lesson = lessons[checkpoint.dataset.id];
@@ -631,24 +1100,57 @@
 
     function openLesson(id) {
       activeId = id;
+      document.body.classList.add("workspace-active");
+      astronautCursor.classList.add("is-hidden");
       const lesson = lessons[id];
       document.getElementById("game-title").textContent = lesson.title;
       document.getElementById("game-concept").textContent = lesson.concept;
       document.getElementById("game-lesson").textContent = lesson.lesson;
-      document.getElementById("game-task").textContent = lesson.task;
+      const isForLoops = id === "for-loops";
+      gameTask.textContent = isForLoops && forLoopStage === 2
+        ? "Now plant 6 trees. Use a for loop to repeat the planting steps."
+        : lesson.task;
+      firstLoopExample.hidden = !isForLoops || forLoopStage !== 2;
+      firstLoopExample.textContent = isForLoops && forLoopStage === 2
+        ? `Your first loop:\n${firstLoopCode}`
+        : "";
+      const guide = guideScenes[id];
+      const pixelScene = document.getElementById("pixel-scene");
+      pixelScene.dataset.scene = guide.scene;
+      pixelScene.style.setProperty("--hair", guide.hair);
+      pixelScene.style.setProperty("--skin", guide.skin);
+      pixelScene.style.setProperty("--outfit", guide.outfit);
+      pixelScene.style.setProperty("--coat", "#e8e3da");
+      document.getElementById("scene-guide").textContent = guide.name;
+      document.getElementById("pixel-room-label").textContent = guide.environment;
+      pixelCharacter.setAttribute("viewBox", "0 0 64 64");
+      pixelCharacter.innerHTML = renderPixelGuide(id);
+      pixelCharacter.classList.remove("planting", "planting-walk");
+      pixelCharacter.style.removeProperty("--plant-x");
+      if (isForLoops && forLoopStage === 1) plantedTrees.replaceChildren();
+      pixelCharacter.setAttribute("aria-label", `Pixel-art cartoon of ${guide.name} in the ${guide.environment.toLowerCase()}`);
       codeAnswer.value = "";
+      codeAnswer.placeholder = isForLoops
+        ? forLoopStage === 2
+          ? "Use your first loop as a guide. Change it to plant six trees."
+          : "for seed in range(3):\n    print(seed)"
+        : "Type your Python code here.";
+      updateCodePreview();
       feedback.textContent = "";
       feedback.classList.remove("success");
       gameScreen.classList.add("active");
       gameScreen.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
-      document.getElementById("back-button").focus();
+      codeAnswer.focus();
     }
 
     function closeLesson() {
+      if (planting) return;
       gameScreen.classList.remove("active");
       gameScreen.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("workspace-active");
       document.body.style.overflow = "";
+      astronautCursor.classList.remove("is-hidden");
       if (activeId) document.querySelector(`[data-id="${activeId}"] .diamond`).focus();
     }
 
@@ -656,20 +1158,69 @@
     document.getElementById("close-button").addEventListener("click", closeLesson);
     document.addEventListener("keydown", event => { if (event.key === "Escape" && gameScreen.classList.contains("active")) closeLesson(); });
 
-    document.getElementById("check-button").addEventListener("click", () => {
+    document.getElementById("check-button").addEventListener("click", async event => {
       const lesson = lessons[activeId];
-      if (lesson.check(codeAnswer.value)) {
-        completed.add(activeId);
-        const checkpoint = document.querySelector(`[data-id="${activeId}"]`);
-        checkpoint.classList.add("gold");
-        document.getElementById("progress-count").textContent = `${completed.size} / ${checkpoints.length}`;
-        document.getElementById("progress-fill").style.width = `${completed.size / checkpoints.length * 100}%`;
-        feedback.textContent = "That's it! Checkpoint complete, star earned.";
-        feedback.classList.add("success");
-      } else {
+      const submittedCode = codeAnswer.value;
+      if (!lesson.check(submittedCode)) {
         feedback.textContent = "Not quite yet. Check the mission and give it another try.";
         feedback.classList.remove("success");
+        return;
       }
+
+      if (activeId === "for-loops") {
+        const result = getLoopIterationCount(submittedCode);
+        if (result.error) {
+          feedback.textContent = result.error;
+          feedback.classList.remove("success");
+          return;
+        }
+        if (forLoopStage === 2 && result.count !== 6) {
+          feedback.textContent = "Make this loop run exactly 6 times to plant six trees.";
+          feedback.classList.remove("success");
+          return;
+        }
+        if (planting) return;
+
+        planting = true;
+        const checkButton = event.currentTarget;
+        checkButton.disabled = true;
+        feedback.textContent = `Wangari is planting ${result.count} ${result.count === 1 ? "tree" : "trees"}...`;
+        feedback.classList.remove("success");
+        try {
+          await animateTreePlanting(result.count, forLoopStage);
+          if (forLoopStage === 1) {
+            firstLoopCode = submittedCode;
+            forLoopStage = 2;
+            gameTask.textContent = "Now plant 6 trees. Use a for loop to repeat the planting steps.";
+            firstLoopExample.textContent = `Your first loop:\n${firstLoopCode}`;
+            firstLoopExample.hidden = false;
+            codeAnswer.value = "";
+            codeAnswer.placeholder = "Use your first loop as a guide. Change it to plant six trees.";
+            updateCodePreview();
+            feedback.textContent = "Great work! Now use your example to plant 6 trees.";
+          } else {
+            completed.add(activeId);
+            const checkpoint = document.querySelector(`[data-id="${activeId}"]`);
+            checkpoint.classList.add("gold");
+            document.getElementById("progress-count").textContent = `${completed.size} / ${checkpoints.length}`;
+            document.getElementById("progress-fill").style.width = `${completed.size / checkpoints.length * 100}%`;
+            feedback.textContent = "That's it! Checkpoint complete, star earned.";
+            feedback.classList.add("success");
+          }
+        } finally {
+          planting = false;
+          checkButton.disabled = false;
+        }
+        return;
+      }
+
+      completed.add(activeId);
+      const checkpoint = document.querySelector(`[data-id="${activeId}"]`);
+      checkpoint.classList.add("gold");
+      document.getElementById("progress-count").textContent = `${completed.size} / ${checkpoints.length}`;
+      document.getElementById("progress-fill").style.width = `${completed.size / checkpoints.length * 100}%`;
+      feedback.textContent = "That's it! Checkpoint complete, star earned.";
+      feedback.classList.add("success");
     });
   </script>
 </body>
