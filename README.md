@@ -9,7 +9,7 @@ Girl Hoo Hacks Hackathon
 
 ## 🌟 Overview
 
-**Code with Sally** transforms abstract programming concepts into tangible visual outcomes. Players travel along a constellation map of coding checkpoints, guided by real-world women pioneers in STEM. 
+**Code with Sally** transforms abstract programming concepts into tangible visual outcomes. Players travel along a constellation map of coding checkpoints, guided by women pioneers in STEM. 
 
 In our featured **For Loops** module, players join **Dr. Wangari Maathai** (founder of the Green Belt Movement) to write Python loops that plant trees and restore digital ecosystems in real-time.
 
